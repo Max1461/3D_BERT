@@ -29,6 +29,11 @@ arg_parser = argparse.ArgumentParser(description=" \
     The pkl file is made of --clusters number of lists containaing {peptide,ba_value} objects. \
     ")
 arg_parser.add_argument(
+    "pdb_dir", "-d",
+    help = "Path to the directory containing PDB files",
+    required=True
+)    
+arg_parser.add_argument(
     "--file","-f",
     help="Name of the DB1 file.",
     required=True
@@ -128,8 +133,6 @@ def cluster_peptides(peptides, n_clusters, frag_len = 9,
     """
     Calculates evolutionary distance (with a substitution matrix) within a set of peptides.
     Uses this distances to generate a dendrogram and cluster the pepties.
-
-
     Args:
         peptides (list): List of peptides to be clustered.
         threshold (int): Score threshold to cut the dendrogram into clusters.
@@ -140,10 +143,8 @@ def cluster_peptides(peptides, n_clusters, frag_len = 9,
             Defaults to 'PAM30'.
         outplot (str or None, optional): If a path or file name is provided,
             it will generate a dendrogram output plot. Defaults to None.
-
     Returns:
         clst_dct (dict): dictionary of the peptides clusters.
-
     """
 
     t1 = time.time()
@@ -279,6 +280,140 @@ def gibbscluster_peptides(peptides, n_jobs=1,
 
     return clusters
 
+def distance(s1, s2, pam_matrix):
+    """
+    Calculate the distance between two sequences using the given substitution matrix.
+
+    Arguments:
+        s1 {str} -- The first sequence.
+        s2 {str} -- The second sequence.
+        pam_matrix {list} -- The substitution matrix to use for calculating the distance.
+
+    Returns:
+        int -- The distance between the two sequences.
+    """
+    return sum(pam_matrix[aa1][aa2] for aa1, aa2 in zip(s1, s2))
+
+def cluster_representatives(cluster_dict, matrix):
+    """
+    Calculate the cluster representative for each cluster in the given cluster dictionary. The distance between sequences
+    is calculated using the specified substitution matrix.
+
+    Arguments:
+        cluster_dict {dict} -- A dictionary with the cluster names as keys and lists of peptide sequences as values.
+        matrix {str} -- The name of the substitution matrix to use for calculating the distances between sequences. Can be
+                       either "PAM250" or "PAM30".
+
+    Returns:
+        dict -- A dictionary with the cluster names as keys and the cluster representative as values.
+    """
+    pam_matrix = substitution_matrices.load(matrix)
+
+    representatives = {}
+    for cluster_name, cluster in cluster_dict.items():
+        min_dist = float('inf')
+        rep = None
+        for s1 in cluster:
+            dist = 0
+            for s2 in cluster:
+                dist += distance(s1, s2, pam_matrix)
+            if dist < min_dist:
+                min_dist = dist
+                rep = s1
+        representatives[cluster_name] = rep
+    return representatives
+
+def parse_peptide_sequences(pdb_files, chain_length):
+    """Parses the peptide sequences from the specified PDB files and returns them as a dictionary with the file name as the key and the peptide sequence as the value.
+
+    Arguments:
+        pdb_files {list} -- A list of paths to the PDB files
+        chain_length {int} -- The length of the protein chain containing the peptides
+
+    Returns:
+        dict -- A dictionary with the file name as the key and the peptide sequence as the value
+    """
+
+    peptide_sequences = {}
+
+    # parse the peptide sequences from the PDB files
+    for pdb_file in pdb_files:
+        with open(pdb_file) as f:
+            # parse the lines using column numbers
+            lines = [line for line in f if line.startswith("ATOM")]
+            res_types = [line[17:20].strip() for line in lines]
+            chains = [line[21] for line in lines]
+            residue_sequences = [line[22:26].strip() for line in lines]
+
+            # check if the atoms are part of the chain with the specified length
+            res_types_by_chain = {}
+            for rt, c, rs in zip(res_types, chains, residue_sequences):
+                if c not in res_types_by_chain:
+                    res_types_by_chain[c] = {}
+                if rs not in res_types_by_chain[c]:
+                    res_types_by_chain[c][rs] = rt
+            
+            # find the chain with the specified length
+            target_chain = None
+            for c, rts in res_types_by_chain.items():
+                if len(rts) == chain_length:
+                    target_chain = c
+                    break
+
+        # store the peptide sequence as a string
+        if target_chain is not None:
+            peptide_sequence = "".join(res_types_by_chain[target_chain].values())
+        else:
+            peptide_sequence = ""
+        
+        # Get the file name with the extension
+        file_name_with_ext = os.path.basename(pdb_file)
+        # Split the file name and extension
+        file_name, file_ext = os.path.splitext(file_name_with_ext)
+        # Add the file name and peptide sequence to the dictionary only if the peptide sequence is not empty
+        if peptide_sequence:
+            peptide_sequence = convert_amino_acid_identifiers(peptide_sequence)
+            peptide_sequences[file_name] = peptide_sequence
+
+    return peptide_sequences
+
+def convert_amino_acid_identifiers(peptide_sequence):
+    # Create a dictionary to map 3 letter amino acid identifiers to single letter identifiers
+    aa_map = {
+        'ALA': 'A', 'CYS': 'C', 'ASP': 'D', 'GLU': 'E', 'PHE': 'F',
+        'GLY': 'G', 'HIS': 'H', 'ILE': 'I', 'LYS': 'K', 'LEU': 'L',
+        'MET': 'M', 'ASN': 'N', 'PRO': 'P', 'GLN': 'Q', 'ARG': 'R',
+        'SER': 'S', 'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'
+    }
+
+    # Initialize an empty result string
+    result = ''
+
+    # Iterate through the input string and convert the 3 letter amino acid identifiers to single letter identifiers
+    for i in range(0, len(peptide_sequence), 3):
+        aa = peptide_sequence[i:i+3]
+        result += aa_map.get(aa, 'X')
+
+    # Return the result
+    return result
+
+def write_peptides_to_csv(peptides, file_name):
+    """Write the peptide IDs and peptides to a CSV file.
+
+    Arguments:
+        peptides {dict} -- A dictionary with the keys being the peptide IDs and the values being the peptides
+        file_name {str} -- The name of the CSV file to write the data to
+    """
+    with open(file_name, 'w', newline='') as csv_file:
+        # Create a CSV writer object
+        writer = csv.writer(csv_file)
+
+        # Write the headers to the CSV file
+        writer.writerow(['peptide_ID', 'peptide'])
+
+        # Iterate through the dictionary and write the peptide IDs and peptides to the CSV file
+        for peptide_ID, peptide in peptides.items():
+            writer.writerow([peptide_ID, peptide])
 
 if __name__=='__main__':
     a = arg_parser.parse_args()
@@ -290,6 +425,17 @@ if __name__=='__main__':
     # used as labels, different length between peptides and the actual number of clusters (unique sequences) lead to an error.
     peptides = sorted(list(set(df["peptide"].tolist()))) 
 
+    # get the list of PDB files in the specified directory
+    pdb_files = glob.glob(os.path.join(a.pdb_dir, "*.pdb"))
+
+    # parse the peptide sequences from the PDB files
+    peptides = parse_peptide_sequences(pdb_files, a.peptides_length)
+    
+    # Write peptides to csv files
+    write_peptides_to_csv(peptides, csv_path)
+    df = pd.read_csv(csv_path)
+    peptides = sorted(list(set(df["peptide"].tolist())))
+    
     #Add a a.gibbs argument. If true, use gibbscluster, otherwise use this.
     if not a.gibbs:
         method = 'standard'
@@ -300,13 +446,16 @@ if __name__=='__main__':
             n_clusters = a.clusters,
             frag_len = a.peptides_length
         )
-        pickle.dump(clusters, open(f"../../data/external/processed/{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
+        print(clusters)
+        representatives = cluster_representatives(clusters, a.matrix)
+        pickle.dump(representatives, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_cluster_representatives.pkl", "wb"))
+        pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
     else:
         method = 'gibbscluster'
         clusters = gibbscluster_peptides(peptides, n_jobs=a.njobs, 
                     pept_length=a.peptides_length, n_clusters=a.clusters,
                     rm_outputs=False)
-        pickle.dump(clusters, open(f"../../data/external/processed/{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
+        pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
         clusters = {key : clusters[key]['peptides'] for key in clusters}
 
     if a.update_csv: 
