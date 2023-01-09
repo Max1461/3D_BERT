@@ -51,11 +51,11 @@ def parse_peptide_sequences(pdb_files, chain_length):
                     target_chain = c
                     break
 
-            # store the peptide sequence as a string
-            if target_chain is not None:
-                peptide_sequence = "".join(res_types_by_chain[target_chain].values())
-            else:
-                peptide_sequence = ""
+        # store the peptide sequence as a string
+        if target_chain is not None:
+            peptide_sequence = "".join(res_types_by_chain[target_chain].values())
+        else:
+            peptide_sequence = ""
         
         # Get the file name with the extension
         file_name_with_ext = os.path.basename(pdb_file)
@@ -178,7 +178,13 @@ def select_most_dissimilar_peptide(peptides, pam250):
     else:
         return peptides[max_i] if max_i > max_j else peptides[max_j]
 
-def write_peptides_to_csv(peptides, peptide_IDs, file_name):
+def write_peptides_to_csv(peptides, file_name):
+    """Write the peptide IDs and peptides to a CSV file.
+
+    Arguments:
+        peptides {dict} -- A dictionary with the keys being the peptide IDs and the values being the peptides
+        file_name {str} -- The name of the CSV file to write the data to
+    """
     with open(file_name, 'w', newline='') as csv_file:
         # Create a CSV writer object
         writer = csv.writer(csv_file)
@@ -186,11 +192,8 @@ def write_peptides_to_csv(peptides, peptide_IDs, file_name):
         # Write the headers to the CSV file
         writer.writerow(['peptide_ID', 'peptide'])
 
-        # Zip the peptide IDs and peptide sequences into a list of tuples
-        peptide_data = zip(peptide_IDs, peptides)
-
-        # Write the data to the CSV file
-        for peptide_ID, peptide in peptide_data:
+        # Iterate through the dictionary and write the peptide IDs and peptides to the CSV file
+        for peptide_ID, peptide in peptides.items():
             writer.writerow([peptide_ID, peptide])
 
 def get_file_names(file_paths):
@@ -217,20 +220,6 @@ if __name__ == "__main__":
     # parse the peptide sequences from the PDB files
     peptides = parse_peptide_sequences(pdb_files, 9)
     print(peptides)
-
-    # get peptide pdb IDs
-    peptide_IDs = get_file_names(pdb_files)
-
-    # convert residues to single letter ID
-    peptides = convert_amino_acid_identifiers(peptides)
     
     # Write peptides to csv files
-    write_peptides_to_csv(peptides, peptide_IDs, 'cluster_peptides.csv')
-
-    # cluster the peptides with CD-HIT
-    cd_hit_representatives = cluster_peptides_with_cdhit(peptides, n_clusters=10)
-    print(cd_hit_representatives)
-    
-    #cluster peptides with Pam250
-    Pam250_representatives = cluster_peptides_pam250(peptides, n_clusters=10)
-    print(Pam250_representatives)
+    write_peptides_to_csv(peptides, 'cluster_peptides.csv')
