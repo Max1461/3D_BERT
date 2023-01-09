@@ -178,11 +178,20 @@ def select_most_dissimilar_peptide(peptides, pam250):
     else:
         return peptides[max_i] if max_i > max_j else peptides[max_j]
 
-def write_peptides_to_csv(peptides, file_name):
+def write_peptides_to_csv(peptides, peptide_IDs, file_name):
     with open(file_name, 'w', newline='') as csv_file:
+        # Create a CSV writer object
         writer = csv.writer(csv_file)
-        for peptide in peptides:
-            writer.writerow([peptide])
+
+        # Write the headers to the CSV file
+        writer.writerow(['peptide_ID', 'peptide'])
+
+        # Zip the peptide IDs and peptide sequences into a list of tuples
+        peptide_data = zip(peptide_IDs, peptides)
+
+        # Write the data to the CSV file
+        for peptide_ID, peptide in peptide_data:
+            writer.writerow([peptide_ID, peptide])
 
 def get_file_names(file_paths):
     file_names = []
@@ -216,7 +225,7 @@ if __name__ == "__main__":
     peptides = convert_amino_acid_identifiers(peptides)
     
     # Write peptides to csv files
-    write_peptides_to_csv(peptides, 'cluster_peptides.csv')
+    write_peptides_to_csv(peptides, peptide_IDs, 'cluster_peptides.csv')
 
     # cluster the peptides with CD-HIT
     cd_hit_representatives = cluster_peptides_with_cdhit(peptides, n_clusters=10)
