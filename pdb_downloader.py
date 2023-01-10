@@ -32,7 +32,8 @@ def download_pdb_files(pdb_ids, download_path):
         download_path: The path where the PDB files will be downloaded.
     """
     # Set the URL for the PDB database
-    pdb_url = "https://www.rcsb.org/pdb/files/"
+    # pdb_url = "https://www.rcsb.org/pdb/files/"
+    
 
     # Create the download directory if it does not exist
     if not os.path.exists(download_path):
@@ -40,13 +41,15 @@ def download_pdb_files(pdb_ids, download_path):
 
     # Download the PDB files for each PDB ID
     for pdb_id in pdb_ids:
-        pdb_file = pdb_id + ".pdb"
+        pdb_file = pdb_id + ".pdb.gz"
+        pdb_url = "https://www.imgt.org/3Dstructure-DB/IMGT-FILE/IMGT-{}".format(pdb_file)
         file_path = os.path.join(download_path, pdb_file)
 
         # Check if the file already exists in the download path
-        if not os.path.exists(file_path):
+        if not os.path.exists(file_path) or os.path.exists(file_path.rstrip('.gz')):
             # Download the file if it does not exist
-            urllib.request.urlretrieve(pdb_url + pdb_file, file_path)
+            # urllib.request.urlretrieve(pdb_url + pdb_file, file_path)
+            urllib.request.urlretrieve(pdb_url, file_path)
             print(f"PDB file for {pdb_id} successfully downloaded to {download_path}.")
         else:
             # Skip the download if the file already exists
@@ -93,16 +96,34 @@ def get_pdb_ids(receptor_type):
     # Return the list of PDB IDs
     return list(df["IMGT entry ID"])
 
+import os
+import shutil
+
+def unpack_pdb_gz(directory, remove_zipped = False):
+    """
+    Unpacks all .pdb.gz files in the specified directory using gzip.open() method
+
+    Args:
+        directory (str): The path to the directory where the .pdb.gz files are located.
+        remove_zipped (bool, optional): If True remove the original compressed .pdb.gz files after they have been unpacked. Default is False
+
+    Returns:
+        None
+    """
+    for filename in os.listdir(directory):
+        if filename.endswith('.pdb.gz'):
+            file_path = os.path.join(directory, filename)
+            with gzip.open(file_path, 'rb') as f_in:
+                with open(file_path.strip('.gz'), 'wb') as f_out:
+                    f_out.write(f_in.read())
+            if remove_zipped:
+                os.remove(file_path)
+
 if __name__ == "__main__":
     # Parse the input arguments
     parser = argparse.ArgumentParser()
-    # parser.add_argument("input_file", help="The input file containing PDB IDs.")
     parser.add_argument("download_path", help="The path where the PDB files will be downloaded.")
     args = parser.parse_args()
-    
-    # # If the user did not provide an input file, ask for it
-    # if not args.input_file:
-    #     args.input_file = input("Please provide the input file containing PDB IDs: ")
 
     # If the user did not provide a download path, ask for it
     if not args.download_path:
@@ -110,9 +131,12 @@ if __name__ == "__main__":
     # Read the PDB IDs from IMGT database
     receptor_type='MH1'
     pdb_ids = get_pdb_ids(receptor_type)
+    pdb_ids = [i.upper() for i in pdb_ids]
 
     # Download the PDB files for the PDB IDs
     download_pdb_files(pdb_ids, args.download_path)
+    # Unzip PDB files
+    unpack_pdb_gz(args.download_path, True)
 
 
 
