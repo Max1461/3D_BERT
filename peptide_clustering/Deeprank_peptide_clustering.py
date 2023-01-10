@@ -35,7 +35,7 @@ arg_parser.add_argument(
 )    
 arg_parser.add_argument(
     "--file","-f",
-    help="Name of the DB1 file.",
+    help="Name of the csv file to be made and used.",
     required=True
 )
 arg_parser.add_argument("--gibbs", "-g",
@@ -446,7 +446,6 @@ if __name__=='__main__':
             n_clusters = a.clusters,
             frag_len = a.peptides_length
         )
-        print(clusters)
         representatives = cluster_representatives(clusters, a.matrix)
         pickle.dump(representatives, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_cluster_representatives.pkl", "wb"))
         pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
