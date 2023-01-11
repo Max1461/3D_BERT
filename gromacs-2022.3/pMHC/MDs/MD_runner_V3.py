@@ -26,7 +26,7 @@ def extract_chains_from_pdb(pdb_file):
         A set containing the chain identifiers found in the PDB file, sorted in alphabetical order.
     """
     # Open the PDB file
-    with open("example.pdb", "r") as file:
+    with open(pdb_file, "r") as file:
         pdb_file = file.read()
 
     # Use a regular expression to find the lines that contain the chain IDs
@@ -38,21 +38,24 @@ def extract_chains_from_pdb(pdb_file):
     # Find the index of the lines that contain the word "COMPND"
     compnd_index = [i for i, line in enumerate(pdb_file.split('\n')) if 'COMPND' in line]
 
-    peptide_chains = []
-    # iterate over the index of the lines that contain the word "COMPND"
-    for i in compnd_index:
-        lines = pdb_file.split("\n")[i:] # get all lines that follows the line contain "COMPND"
-        for j,line in enumerate(lines):
-            if "MOL_ID" in line:
-                break
-            if "peptide" in line.lower():
-                peptide_chain = re.findall(r"CHAIN:\s+([A-Z,\s]+)", line)
-                if peptide_chain:
-                    peptide_chains.append(peptide_chain[0].replace(" ", "").replace(",", ""))
+    # peptide_chains = []
+    # # iterate over the index of the lines that contain the word "COMPND"
+    # for i in compnd_index:
+    #     lines = pdb_file.split("\n")[i:] # get all lines that follows the line contain "COMPND"
+    #     for j,line in enumerate(lines):
+    #         if "MOL_ID" in line:
+    #             break
+    #         if "peptide" in line.lower():
+    #             peptide_chain = re.findall(r"CHAIN:\s+([A-Z,\s]+)", line)
+    #             if peptide_chain:
+    #                 peptide_chains.append(peptide_chain[0].replace(" ", "").replace(",", ""))
 
-    petide_ID = peptide_chains[0]
+    # petide_ID = peptide_chains[0]
 
-    return chains, petide_ID
+    regex = r"G.*-.*A.*L.*P.*H.*A.*?\d\s(\(\d+?-\d+?\))\s\[D\d\]"
+    g_domains = re.findall(regex, pdb_file, re.S)
+
+    return chains, g_domains
 
 def process_pdb_file(pdb_file):
     """
