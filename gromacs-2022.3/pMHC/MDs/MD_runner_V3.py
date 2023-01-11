@@ -28,6 +28,7 @@ def extract_chains_from_pdb(pdb_file):
     # Open the PDB file
     with open(pdb_file, "r") as file:
         pdb_file = file.read()
+        lines = pdb_file.splitlines()
 
     # Use a regular expression to find the lines that contain the chain IDs
     chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)", pdb_file)
@@ -52,10 +53,20 @@ def extract_chains_from_pdb(pdb_file):
 
     # petide_ID = peptide_chains[0]
 
-    regex = r"G.*-.*A.*L.*P.*H.*A.*?\d\s(\(\d+?-\d+?\))\s\[D\d\]"
-    g_domains = re.findall(regex, pdb_file, re.S)
+    g_domain = ""
 
-    return chains, g_domains
+    for i, line in enumerate(lines):
+            if "G-DOMAIN" in line:
+                for j in range(i-11, i):
+                    g_domain += lines[j]
+                break
+    else:
+        print("G-DOMAIN not found in file.")
+
+    regex = r"\[\s+?G.*?-.*?A.*?L.*?P.*?H.*?A.*?\d\s\((\d+-\d+)\)\s\[D\d+\]"
+    g_domain_range_string = re.findall(regex, g_domain)
+
+    return chains, g_domain_range_string
 
 def process_pdb_file(pdb_file):
     """
