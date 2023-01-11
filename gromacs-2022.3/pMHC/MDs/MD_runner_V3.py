@@ -64,7 +64,11 @@ def extract_chains_from_pdb(pdb_file):
         print("G-DOMAIN not found in file.")
 
     regex = r"\[\s+?G.*?-.*?A.*?L.*?P.*?H.*?A.*?\d\s\((\d+-\d+)\)\s\[D\d+\]"
-    g_domain_range_string = re.findall(regex, g_domain)
+    g_domain_range_strings = re.findall(regex, g_domain)
+
+    if len(g_domain_range_strings) != 2:
+        g_domain_parts = len(g_domain_range_strings)
+        print("Expect to find two parts of the g-domain range, alpha 1 and alpha 2, but found {}".format(g_domain_parts))
 
     return chains, g_domain_range_string
 
