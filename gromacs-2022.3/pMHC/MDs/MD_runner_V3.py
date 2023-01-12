@@ -15,15 +15,18 @@ import string
 from openmm.app import PDBFile
 from pdbfixer import PDBFixer
 
-def extract_chains_from_pdb(pdb_file):
+def extract_information_from_pdb(pdb_file):
     """
-    Extracts the chain identifiers from the given PDB file and rewrites the file with the chains sorted in alphabetical order.
+    Extracts various information from the given PDB file including:
+    - The chain identifiers found in the PDB file, sorted in alphabetical order.
+    - The peptide chain ID
+    - The G-domain range strings
 
     Args:
-        pdb_file: The path to the PDB file.
+        pdb_file (str): The path to the PDB file.
 
     Returns:
-        A set containing the chain identifiers found in the PDB file, sorted in alphabetical order.
+        A dictionary containing the extracted variables. The keys are 'chains', 'peptide_ID', and 'g_domain_range'
     """
     # Open the PDB file
     with open(pdb_file, "r") as file:
@@ -36,22 +39,28 @@ def extract_chains_from_pdb(pdb_file):
     # Extract the chain IDs from the lines and removes the spaces and ','
     chains = [i.replace(" ", "").replace(",", "") for i in chain_lines]
 
-    # Find the index of the lines that contain the word "COMPND"
-    compnd_index = [i for i, line in enumerate(pdb_file.split('\n')) if 'COMPND' in line]
+    peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(), pdb_file)
 
-    # peptide_chains = []
-    # # iterate over the index of the lines that contain the word "COMPND"
-    # for i in compnd_index:
-    #     lines = pdb_file.split("\n")[i:] # get all lines that follows the line contain "COMPND"
-    #     for j,line in enumerate(lines):
-    #         if "MOL_ID" in line:
-    #             break
-    #         if "peptide" in line.lower():
-    #             peptide_chain = re.findall(r"CHAIN:\s+([A-Z,\s]+)", line)
-    #             if peptide_chain:
-    #                 peptide_chains.append(peptide_chain[0].replace(" ", "").replace(",", ""))
+    if not peptide_chains:
+        print("No peptide chain found in pdb file documentation, finding smallest chain to search for peptide")
+        # Initialize a dictionary to store the lines for each chain
+        chain_lines = {chain_id: [] for chain_id in chains}
+        # Open the PDB file in read mode
+        with open(pdb_file, "r") as f:
+            # Iterate over each line in the file
+            for line in f:
+                # Check if the line corresponds to an ATOM or HETATM record for one of the specified chain IDs
+                if line.startswith("ATOM  ") or line.startswith("HETATM") and line[21] in chains:
+                    # If so, add the line to the list for the appropriate chain
+                    chain_lines[line[21]].append(line)
+        peptide_chains = min(chain_lines, key=lambda k: len(chain_lines[k]))
+        petide_ID = peptide_chains[0]
 
-    # petide_ID = peptide_chains[0]
+    if len(peptide_chains)>1:
+        print("Found multiple peptides in documentation, selecting first occurence(for now)")
+        petide_ID = peptide_chains[0]
+    else:
+        petide_ID = peptide_chains[0]
 
     g_domain = ""
 
@@ -70,23 +79,31 @@ def extract_chains_from_pdb(pdb_file):
         g_domain_parts = len(g_domain_range_strings)
         print("Expect to find two parts of the g-domain range, alpha 1 and alpha 2, but found {}".format(g_domain_parts))
 
-    return chains, g_domain_range_string
+    pdb_information = {
+    'chains': chains,
+    'peptide_ID': petide_ID,
+    'g_domain_range': g_domain_range_strings
+    }
+    return pdb_information
 
 def process_pdb_file(pdb_file):
     """
-    Processes the given PDB file using pdb4amber, gmx, and sed.
+    Processes the given PDB file. The function uses PDBFixer to remove heterogens, 
+    find missing residues and atoms, and add missing heavy atoms.
+    The function also uses gmx to convert the PDB file to a GRO file,
+    and finds the index numbers for the expected NH3+ start and COO- end terminals
+    and uses them to run the final version of gmx pdb2gmx. 
 
     Args:
-        pdb_file: The path to the PDB file to be processed.
+        pdb_file (str): The path to the PDB file to be processed.
+    Returns:
+        processed_gro_file (str) :  The processed gro file.
+        gmx_cleaned_pdb_file (str) :  The processed gmx cleaned pdb file.
+
     """
     pdb_path = pdb_file
     # Get the file name with the extension
     pdb_file = os.path.basename(pdb_file)
-
-    # Clean the PDB file and add missing heavy atoms
-    # cleaned_pdb_file = "cleaned_{}".format(pdb_file)
-    # run_line = "pdb_delresname -HOH {} > {}".format(pdb_path, cleaned_pdb_file)
-    # subprocess.call(run_line, shell=True)
 
     gmx_cleaned_pdb_file = "gmx_cleaned_{}".format(pdb_file)
 
@@ -119,7 +136,7 @@ def process_pdb_file(pdb_file):
     # Run final version
     subprocess.run(["echo {} | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter".format(ter_inputs, gmx_cleaned_pdb_file, processed_gro_file)],shell=True)
     
-    return processed_gro_file
+    return gmx_cleaned_pdb_file, processed_gro_file
 
 def process_gro_file(processed_gro_file):
     """
@@ -168,7 +185,6 @@ def create_index(chains):
 
     complete_input = ""
     for chain_ID in chains:
-    # for chain_ID in ["A", "B", "P"]:
 
         # Use a regular expression to parse the initial output
         chain_nr = re.findall(r"(\d+).+?ch{}".format(chain_ID), initial_output_str)[0]
@@ -181,7 +197,7 @@ def create_index(chains):
     # Send the new input to the subprocess
     subprocess.run(["gmx make_ndx -n index.ndx -o index.ndx -quiet"], input = complete_input, shell=True, text=True)
     
-def md_simulation_preparation(n_cpus):
+def md_simulation_preparation(pdb_information, n_cpus):
     """
     Runs a Gromacs MD simulation using the specified number of CPUs.
 
@@ -197,11 +213,9 @@ def md_simulation_preparation(n_cpus):
     cmd = "echo 0 | gmx trjconv -f em.gro -o em.pdb -s em.tpr"
     subprocess.call(cmd, shell=True)
 
-    # Adjust system pdb file
-    change_chain("em.pdb", "C", "P")
-    
-    chains[chains.index('C')] = "P"
     # Create index file for gromacs
+    chains = pdb_information["chains"]
+    # Add the residue range for the G-domain into the index as well
     create_index(chains)
 
     cmd = "gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -n index.ndx -o nvt.tpr"
@@ -268,17 +282,17 @@ def run_md_simulation(n_cpus):
 if __name__ == "__main__":
     pdb_file = argv[1]
 
-    # Extract the chains from the PDB file
-    chains, petide_ID = extract_chains_from_pdb(pdb_file)
-
     # Process the PDB file
-    processed_gro_file = process_pdb_file(pdb_file)
+    gmx_cleaned_pdb_file, processed_gro_file = process_pdb_file(pdb_file)
+
+    # Extract the chains from the PDB file
+    pdb_information = extract_information_from_pdb(gmx_cleaned_pdb_file)
 
     # Process the processed GRO file
     process_gro_file(processed_gro_file)
 
     # Run temperature and pressure equilibriations
-    md_simulation_preparation(n_cpus=20)
+    md_simulation_preparation(pdb_information, n_cpus=20)
 
     # Add the energy group lines to the md.mdp file
     add_energy_groups()
