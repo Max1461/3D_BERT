@@ -12,6 +12,7 @@ from sys import argv
 import re
 import shutil
 import string
+from pathlib import Path
 from openmm.app import PDBFile
 from pdbfixer import PDBFixer
 
@@ -28,6 +29,9 @@ def extract_information_from_pdb(pdb_file):
     Returns:
         A dictionary containing the extracted variables. The keys are 'chains', 'peptide_ID', and 'g_domain_range'
     """
+
+    pdb_ID = Path(pdb_file).resolve().stem.lower()
+
     # Open the PDB file
     with open(pdb_file, "r") as file:
         pdb_file = file.read()
@@ -39,7 +43,7 @@ def extract_information_from_pdb(pdb_file):
     # Extract the chain IDs from the lines and removes the spaces and ','
     chains = [i.replace(" ", "").replace(",", "") for i in chain_lines]
 
-    peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(), pdb_file)
+    peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(), pdb_ID)
 
     if not peptide_chains:
         print("No peptide chain found in pdb file documentation, finding smallest chain to search for peptide")
@@ -231,12 +235,14 @@ def md_simulation_preparation(pdb_information, n_cpus):
     cmd = f"gmx mdrun -deffnm npt -nt {n_cpus}"
     subprocess.call(cmd, shell=True)
     
-def add_energy_groups():
+def add_energy_groups(pdb_information):
     """
     Add the 'energy-grps' line to the md file, if it does not already exist.
 
     """
     # Add the groups for energy calcs later
+    chains = pdb_information["chains"]
+    groups_pattern = " ".join(["ch{}".format(i) for i in chains])
     # Flag to check if the line was added or not
     line_added = False
 
@@ -250,9 +256,9 @@ def add_energy_groups():
             # Check if the line starts with "rvdw                    = 1.2,"
             if line.startswith('rvdw                    = 1.2'):
                 # Check if the next line is the line to add
-                if lines[i+1].strip() != 'energy-grps             = chA chB chP':
+                if lines[i+1].strip() != 'energy-grps             = {}'.format(groups_pattern):
                     # Add the line after the current line
-                    lines.insert(i+1, 'energy-grps             = chA chB chP\n')
+                    lines.insert(i+1, 'energy-grps             = {}\n'.format(groups_pattern))
                     # Set the flag to True
                     line_added = True
 
@@ -295,7 +301,7 @@ if __name__ == "__main__":
     md_simulation_preparation(pdb_information, n_cpus=20)
 
     # Add the energy group lines to the md.mdp file
-    add_energy_groups()
+    add_energy_groups(pdb_information)
 
     # Run the energy minimization and MD simulations
     run_md_simulation(n_cpus=20)
