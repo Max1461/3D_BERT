@@ -1,0 +1,33 @@
+Going to read 1 old index file(s)
+Counted atom numbers up to 63718 in index file
+
+  0 System              : 63718 atoms
+  1 Protein             :  6075 atoms
+  2 Protein-H           :  3131 atoms
+  3 C-alpha             :   381 atoms
+  4 Backbone            :  1143 atoms
+  5 MainChain           :  1521 atoms
+  6 MainChain+Cb        :  1879 atoms
+  7 MainChain+H         :  1892 atoms
+  8 SideChain           :  4183 atoms
+  9 SideChain-H         :  1610 atoms
+ 10 Prot-Masses         :  6075 atoms
+ 11 non-Protein         : 57643 atoms
+ 12 Water               : 57633 atoms
+ 13 SOL                 : 57633 atoms
+ 14 non-Water           :  6085 atoms
+ 15 Other               :    10 atoms
+ 16 SOD                 :    10 atoms
+ 17 chA                 :  4328 atoms
+ 18 chB                 :  1605 atoms
+ 19 chP                 :   142 atoms
+ 20 Backbone_&_chA      :   822 atoms
+ 21 Backbone_&_chB      :   294 atoms
+ 22 Backbone_&_chP      :    27 atoms
+
+ nr : group      '!': not  'name' nr name   'splitch' nr    Enter: list groups
+ 'a': atom       '&': and  'del' nr         'splitres' nr   'l': list residues
+ 't': atom type  '|': or   'keep' nr        'splitat' nr    'h': help
+ 'r': residue              'res' nr         'chain' char
+ "name": group             'case': case sensitive           'q': save and quit
+ 'ri': residue index

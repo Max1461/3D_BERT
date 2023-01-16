@@ -162,7 +162,7 @@ def process_gro_file(processed_gro_file):
     cmd = "echo SOL | gmx genion -s ions.tpr -o solv_ions.gro -p topol.top -pname SOD -nname CLA -neutral"
     subprocess.call(cmd, shell=True)
 
-def create_index(chains):
+def create_index(pdb_information):
     """
     Create index.ndx file using the chain identifiers in the given set of chains.
 
@@ -172,6 +172,10 @@ def create_index(chains):
     Returns:
         None
     """
+
+    chains = pdb_information["chains"]
+    peptide_ID = pdb_information["peptide_ID"]
+    g_domain_range_strings = pdb_information['g_domain_range']
 
     chain_identifiers = ""
     for chain in chains:
@@ -186,6 +190,8 @@ def create_index(chains):
     # Read the initial output from the subprocess
     initial_output = proc.stdout
     initial_output_str = str(initial_output, "utf-8")
+    # Get highest current index group number
+    counter = max([int(i) for i in re.findall(r"(\d+)\s.+?\s+:\s+\d+\s+atoms", initial_output_str)])
 
     complete_input = ""
     for chain_ID in chains:
@@ -193,10 +199,31 @@ def create_index(chains):
         # Use a regular expression to parse the initial output
         chain_nr = re.findall(r"(\d+).+?ch{}".format(chain_ID), initial_output_str)[0]
         if chain_nr:
+            # Generate new index group number
+            counter += 1 
             # Based on the parsed output, determine the new input
             new_input = "4 & {}\n".format(chain_nr)
             complete_input += new_input
+            if chain_ID == peptide_ID:
+                new_input += "name {} Peptide_Backbone\n".format(counter)
+                complete_input += new_input
+            else:
+                new_input += "name {} Chain_{}_Backbone\n".format(counter, chain_ID)
+                complete_input += new_input
 
+    # Add groove domain to index
+    g_domain_groups = []
+    g_alpha_count = 1
+    for g_domain_range in g_domain_range_strings:
+        counter += 1
+        g_domain_groups.append(counter)
+        new_input = "r {}\nname {} G_Alpha{}\n".format(g_domain_range, counter, g_alpha_count)
+        g_alpha_count += 1
+        complete_input += new_input
+
+    counter += 1
+    new_input = "or {}\nname {} G_domain\n4 & {}\nname {} G_domain_Backbone\n".format(" ".join([str(i) for i in g_domain_groups]), counter, counter, counter+1)
+    complete_input += new_input
     complete_input += "q\n"            
     # Send the new input to the subprocess
     subprocess.run(["gmx make_ndx -n index.ndx -o index.ndx -quiet"], input = complete_input, shell=True, text=True)
@@ -218,9 +245,8 @@ def md_simulation_preparation(pdb_information, n_cpus):
     subprocess.call(cmd, shell=True)
 
     # Create index file for gromacs
-    chains = pdb_information["chains"]
     # Add the residue range for the G-domain into the index as well
-    create_index(chains)
+    create_index(pdb_information)
 
     cmd = "gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -n index.ndx -o nvt.tpr"
     subprocess.call(cmd, shell=True)
