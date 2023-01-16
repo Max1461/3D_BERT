@@ -206,6 +206,8 @@ def create_index(pdb_information):
             complete_input += new_input
             if chain_ID == peptide_ID:
                 new_input += "name {} Peptide_Backbone\n".format(counter)
+                # Rename peptide chain to Peptide for easier downstream working and analysis 
+                new_input += "name {} Peptide\n".format(chain_nr)
                 complete_input += new_input
             else:
                 new_input += "name {} Chain_{}_Backbone\n".format(counter, chain_ID)
@@ -268,6 +270,8 @@ def add_energy_groups(pdb_information):
     """
     # Add the groups for energy calcs later
     chains = pdb_information["chains"]
+    peptide_ID = pdb_information["peptide_ID"]
+    chains = [x for x in chains if x != peptide_ID]
     groups_pattern = " ".join(["ch{}".format(i) for i in chains])
     # Flag to check if the line was added or not
     line_added = False
@@ -282,9 +286,9 @@ def add_energy_groups(pdb_information):
             # Check if the line starts with "rvdw                    = 1.2,"
             if line.startswith('rvdw                    = 1.2'):
                 # Check if the next line is the line to add
-                if lines[i+1].strip() != 'energy-grps             = {}'.format(groups_pattern):
+                if lines[i+1].strip() != 'energy-grps             = {} Peptide G_domain'.format(groups_pattern):
                     # Add the line after the current line
-                    lines.insert(i+1, 'energy-grps             = {}\n'.format(groups_pattern))
+                    lines.insert(i+1, 'energy-grps             = {} Peptide G_domain\n'.format(groups_pattern))
                     # Set the flag to True
                     line_added = True
 
