@@ -48,8 +48,8 @@ def main():
         #fetch needed mdp, pdb and MD script files
         get_and_copy_mdp_files("../mdp", nwd)
         copy_file(pdb_file, nwd)
-        copy_file("MD_runner_V2.py", nwd)
-        MD_script = os.path.join(nwd, "MD_runner_V2.py")
+        copy_file("MD_runner_V3.py", nwd)
+        MD_script = os.path.join(nwd, "MD_runner_V3.py")
         pdb_file = os.path.join(nwd, os.path.basename(pdb_file))
         os.chdir(os.path.dirname(nwd))
         subprocess.run(["python", "{}".format(MD_script), "{}".format(pdb_file)], cwd=nwd)
