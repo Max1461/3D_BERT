@@ -34,16 +34,17 @@ def extract_information_from_pdb(pdb_file):
 
     # Open the PDB file
     with open(pdb_file, "r") as file:
-        pdb_file = file.read()
-        lines = pdb_file.splitlines()
+        pdb_data = file.read()
+        lines = pdb_data.splitlines()
 
     # Use a regular expression to find the lines that contain the chain IDs
-    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)", pdb_file)
-
+    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)", pdb_data)
     # Extract the chain IDs from the lines and removes the spaces and ','
-    chains = [i.replace(" ", "").replace(",", "") for i in chain_lines]
+    chains = [chain for sublist in chain_lines for chain in sublist.split(", ")]
 
-    peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(), pdb_ID)
+    peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(pdb_ID), pdb_data, re.MULTILINE | re.DOTALL)
+
+    chain_lines_dict = {chain_id: [] for chain_id in chains}
 
     if not peptide_chains:
         print("No peptide chain found in pdb file documentation, finding smallest chain to search for peptide")
@@ -56,8 +57,8 @@ def extract_information_from_pdb(pdb_file):
                 # Check if the line corresponds to an ATOM or HETATM record for one of the specified chain IDs
                 if line.startswith("ATOM  ") or line.startswith("HETATM") and line[21] in chains:
                     # If so, add the line to the list for the appropriate chain
-                    chain_lines[line[21]].append(line)
-        peptide_chains = min(chain_lines, key=lambda k: len(chain_lines[k]))
+                    chain_lines_dict[line[21]].append(line)
+        peptide_chains = min(chain_lines_dict, key=lambda k: len(chain_lines_dict[k]))
         petide_ID = peptide_chains[0]
 
     if len(peptide_chains)>1:
@@ -190,6 +191,7 @@ def create_index(pdb_information):
     # Read the initial output from the subprocess
     initial_output = proc.stdout
     initial_output_str = str(initial_output, "utf-8")
+    print(initial_output_str)
     # Get highest current index group number
     counter = max([int(i) for i in re.findall(r"(\d+)\s.+?\s+:\s+\d+\s+atoms", initial_output_str)])
 
@@ -322,7 +324,7 @@ if __name__ == "__main__":
     gmx_cleaned_pdb_file, processed_gro_file = process_pdb_file(pdb_file)
 
     # Extract the chains from the PDB file
-    pdb_information = extract_information_from_pdb(gmx_cleaned_pdb_file)
+    pdb_information = extract_information_from_pdb(pdb_file)
 
     # Process the processed GRO file
     process_gro_file(processed_gro_file)
