@@ -91,7 +91,7 @@ def extract_information_from_pdb(pdb_file):
     }
     return pdb_information
 
-def process_pdb_file(pdb_file):
+def process_pdb_file(pdb_file, pdb_information):
     """
     Processes the given PDB file. The function uses PDBFixer to remove heterogens, 
     find missing residues and atoms, and add missing heavy atoms.
@@ -106,6 +106,8 @@ def process_pdb_file(pdb_file):
         gmx_cleaned_pdb_file (str) :  The processed gmx cleaned pdb file.
 
     """
+    chains = pdb_information["chains"]
+    chains_count = len(chains)
     pdb_path = pdb_file
     # Get the file name with the extension
     pdb_file = os.path.basename(pdb_file)
@@ -128,7 +130,8 @@ def process_pdb_file(pdb_file):
 
     # Use gmx to process the PDB file
     processed_gro_file = "{}_processed.gro".format(pdb_file.split(".")[0])
-    proc = subprocess.run(["echo 1 1 1 1 1 1 | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter -v".format(gmx_cleaned_pdb_file, processed_gro_file)],
+    gmx_input = " 1 1"
+    proc = subprocess.run(["echo{} | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter -v -debug".format(gmx_input*chains_count, gmx_cleaned_pdb_file, processed_gro_file)],
                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
     # Read the initial output from the subprocess
@@ -139,9 +142,9 @@ def process_pdb_file(pdb_file):
     # Join the index numbers so they can be used as input for the final version to be used
     ter_inputs = " ".join(ter_index_nrs)
     # Run final version
-    subprocess.run(["echo {} | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter -v".format(ter_inputs, gmx_cleaned_pdb_file, processed_gro_file)],shell=True)
+    subprocess.run(["echo {} | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter -v -debug".format(ter_inputs, gmx_cleaned_pdb_file, processed_gro_file)],shell=True)
     
-    return gmx_cleaned_pdb_file, processed_gro_file
+    return processed_gro_file
 
 def process_gro_file(processed_gro_file):
     """
@@ -320,11 +323,11 @@ def run_md_simulation(n_cpus):
 if __name__ == "__main__":
     pdb_file = argv[1]
 
-    # Process the PDB file
-    gmx_cleaned_pdb_file, processed_gro_file = process_pdb_file(pdb_file)
-
     # Extract the chains from the PDB file
     pdb_information = extract_information_from_pdb(pdb_file)
+
+    # Process the PDB file
+    processed_gro_file = process_pdb_file(pdb_file, pdb_information)
 
     # Process the processed GRO file
     process_gro_file(processed_gro_file)
