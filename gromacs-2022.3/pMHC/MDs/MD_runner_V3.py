@@ -245,7 +245,7 @@ def md_simulation_preparation(pdb_information, n_cpus):
     cmd = "gmx grompp -f minim.mdp -c solv_ions.gro -p topol.top -o em.tpr"
     subprocess.call(cmd, shell=True)
 
-    cmd = f"gmx mdrun -v -deffnm em -nt {n_cpus}"
+    cmd = f"gmx mdrun -v -deffnm em -pin on -nt {n_cpus}"
     subprocess.call(cmd, shell=True)
 
     cmd = "echo 0 | gmx trjconv -f em.gro -o em.pdb -s em.tpr"
@@ -259,13 +259,13 @@ def md_simulation_preparation(pdb_information, n_cpus):
     subprocess.call(cmd, shell=True)
 
 
-    cmd = f"gmx mdrun -v -deffnm nvt -nt {n_cpus}"
+    cmd = f"gmx mdrun -v -deffnm nvt -pin on -nt {n_cpus}"
     subprocess.call(cmd, shell=True)
 
     cmd = "gmx grompp -f npt.mdp -c nvt.gro -t nvt.cpt -r nvt.gro -p topol.top -n index.ndx -o npt.tpr"
     subprocess.call(cmd, shell=True)
 
-    cmd = f"gmx mdrun -deffnm npt -nt {n_cpus}"
+    cmd = f"gmx mdrun -deffnm npt -pin on -nt {n_cpus}"
     subprocess.call(cmd, shell=True)
     
 def add_energy_groups(pdb_information):
@@ -316,12 +316,13 @@ def run_md_simulation(n_cpus):
     cmd = "gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -n index.ndx -o md_0_100.tpr"
     subprocess.call(cmd, shell=True)
 
-    cmd = f"gmx mdrun -deffnm md_0_100 -nt {n_cpus}"
+    cmd = f"gmx mdrun -deffnm md_0_100 -pin on -nt {n_cpus}"
     subprocess.call(cmd, shell=True)
 
 
 if __name__ == "__main__":
     pdb_file = argv[1]
+    n_cpus = argv[2]
 
     # Extract the chains from the PDB file
     pdb_information = extract_information_from_pdb(pdb_file)
@@ -333,10 +334,10 @@ if __name__ == "__main__":
     process_gro_file(processed_gro_file)
 
     # Run temperature and pressure equilibriations
-    md_simulation_preparation(pdb_information, n_cpus=20)
+    md_simulation_preparation(pdb_information, n_cpus)
 
     # Add the energy group lines to the md.mdp file
     add_energy_groups(pdb_information)
 
     # Run the energy minimization and MD simulations
-    # run_md_simulation(n_cpus=20)
+    # run_md_simulation(n_cpus)

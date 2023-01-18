@@ -11,16 +11,20 @@ import subprocess
 
 def main():
      # Create an ArgumentParser object
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Script for running Gromacs simulations on a directory or pdb file.")
     
     # Add a positional argument for the directory or pdb file path
-    parser.add_argument("path", help="Path to a directory or pdb file")
-    
+    parser.add_argument("path", help="Path to a directory containing pdb files or a single pdb file.")
+
+    # Add a new argument for the number of CPUs
+    parser.add_argument("--cpu", type=int, help="Number of CPUs to use for the run. Default is 1.", default=1)
+
     # Parse the command line arguments
     args = parser.parse_args()
-    
-    # Get the path from the parsed arguments
+
+    # Get the path and number of CPUs from the parsed arguments
     path = args.path
+    cpu = args.cpu
     
     # Get the list of pdb files
     pdb_files = get_pdb_file_list(path)
@@ -52,7 +56,7 @@ def main():
         MD_script = os.path.join(nwd, "MD_runner_V3.py")
         pdb_file = os.path.join(nwd, os.path.basename(pdb_file))
         os.chdir(os.path.dirname(nwd))
-        subprocess.run(["python", "{}".format(MD_script), "{}".format(pdb_file)], cwd=nwd)
+        subprocess.run(["python", "{}".format(MD_script), "{}".format(pdb_file), "{}".format(cpu)], cwd=nwd)
 
 def get_pdb_files(directory):
     # Get all files in the directory
