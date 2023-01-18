@@ -128,7 +128,7 @@ def process_pdb_file(pdb_file):
 
     # Use gmx to process the PDB file
     processed_gro_file = "{}_processed.gro".format(pdb_file.split(".")[0])
-    proc = subprocess.run(["echo 1 1 1 1 1 1 | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter".format(gmx_cleaned_pdb_file, processed_gro_file)],
+    proc = subprocess.run(["echo 1 1 1 1 1 1 | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter -v".format(gmx_cleaned_pdb_file, processed_gro_file)],
                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
 
     # Read the initial output from the subprocess
@@ -139,7 +139,7 @@ def process_pdb_file(pdb_file):
     # Join the index numbers so they can be used as input for the final version to be used
     ter_inputs = " ".join(ter_index_nrs)
     # Run final version
-    subprocess.run(["echo {} | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter".format(ter_inputs, gmx_cleaned_pdb_file, processed_gro_file)],shell=True)
+    subprocess.run(["echo {} | gmx pdb2gmx -f {} -o {} -ff charmm36-jul2022 -water tip3p -ter -v".format(ter_inputs, gmx_cleaned_pdb_file, processed_gro_file)],shell=True)
     
     return gmx_cleaned_pdb_file, processed_gro_file
 
