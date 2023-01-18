@@ -340,4 +340,4 @@ if __name__ == "__main__":
     add_energy_groups(pdb_information)
 
     # Run the energy minimization and MD simulations
-    # run_md_simulation(n_cpus)
+    run_md_simulation(n_cpus)
