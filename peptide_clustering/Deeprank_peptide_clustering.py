@@ -28,15 +28,16 @@ arg_parser = argparse.ArgumentParser(description=" \
     At the end of execution, dumps the clusters into clusters.pkl file. \
     The pkl file is made of --clusters number of lists containaing {peptide,ba_value} objects. \
     ")
-arg_parser.add_argument(
-    "pdb_dir", "-d",
+group = arg_parser.add_mutually_exclusive_group(required=True)
+group.add_argument(
+    "--pdb_dir", "-d",
     help = "Path to the directory containing PDB files",
-    required=True
+    default = None
 )    
-arg_parser.add_argument(
+group.add_argument(
     "--file","-f",
     help="Name of the csv file to be made and used.",
-    required=True
+    default = None
 )
 arg_parser.add_argument("--gibbs", "-g",
     help="Use gibbscluster for clustering. Defaults to False",
@@ -416,25 +417,34 @@ def write_peptides_to_csv(peptides, file_name):
             writer.writerow([peptide_ID, peptide])
 
 if __name__=='__main__':
-    a = arg_parser.parse_args()
-    filename = a.file.split('/')[-1].split('.')[0]
-    csv_path = a.file
-    df = pd.read_csv(csv_path) 
+    try:
+        a = arg_parser.parse_args()
+    except argparse.ArgumentError as e:
+        raise argparse.ArgumentError("Both pdb_dir and file arguments were provided. Please provide only one of them.")
 
-    # peptides has to be a unique set because the dendogram is calculated for unique peptide sequences. Because peptides are 
-    # used as labels, different length between peptides and the actual number of clusters (unique sequences) lead to an error.
-    peptides = sorted(list(set(df["peptide"].tolist()))) 
+    # check if the file argument is provided
+    if a.file:
+        filename = a.file.split('/')[-1].split('.')[0]
+        csv_path = a.file
+        df = pd.read_csv(csv_path) 
 
-    # get the list of PDB files in the specified directory
-    pdb_files = glob.glob(os.path.join(a.pdb_dir, "*.pdb"))
+        # peptides has to be a unique set because the dendogram is calculated for unique peptide sequences. Because peptides are 
+        # used as labels, different length between peptides and the actual number of clusters (unique sequences) lead to an error.
+        peptides = sorted(list(set(df["peptide"].tolist()))) 
 
-    # parse the peptide sequences from the PDB files
-    peptides = parse_peptide_sequences(pdb_files, a.peptides_length)
-    
-    # Write peptides to csv files
-    write_peptides_to_csv(peptides, csv_path)
-    df = pd.read_csv(csv_path)
-    peptides = sorted(list(set(df["peptide"].tolist())))
+
+    if a.pdb_dir:
+        # get the list of PDB files in the specified directory
+        pdb_files = glob.glob(os.path.join(a.pdb_dir, "*.pdb"))
+
+        # parse the peptide sequences from the PDB files
+        peptides = parse_peptide_sequences(pdb_files, a.peptides_length)
+        
+        # Write peptides to csv files
+        # Add steps to make filename and csv_path variables
+        write_peptides_to_csv(peptides, csv_path)
+        df = pd.read_csv(csv_path)
+        peptides = sorted(list(set(df["peptide"].tolist())))
     
     #Add a a.gibbs argument. If true, use gibbscluster, otherwise use this.
     if not a.gibbs:
@@ -455,7 +465,7 @@ if __name__=='__main__':
                     pept_length=a.peptides_length, n_clusters=a.clusters,
                     rm_outputs=False)
         pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
-        clusters = {key : clusters[key]['peptides'] for key in clusters}
+        clusters_dict = {key : clusters[key]['peptides'] for key in clusters}
 
     if a.update_csv: 
         for idx,cluster in enumerate(clusters.keys()):
