@@ -255,7 +255,7 @@ def parse_gibbscluster_out(res_folder, n_clusters=10):
 def gibbscluster_peptides(peptides, n_jobs=1, 
                             pept_length=15, n_clusters=10,
                              rm_outputs=True):
-    results = f'/projects/0/einf2380/data/temp'
+    results = f'{os.getcwd()}'
     peptides_file = f'{results}/{filename}_pepitdes.txt'
     with open(peptides_file, 'w') as outfile:
         for pept in peptides:
@@ -268,7 +268,8 @@ def gibbscluster_peptides(peptides, n_jobs=1,
     print(f'Sending gibbscluster output to {results}/{pept_length}mers_{run_id}')
     command = f"gibbscluster -f {peptides_file} -l {pept_length} -R {results} -P {pept_length}mers_{run_id} -k {n_jobs} -g {n_clusters}"
     print(command)
-    subprocess.check_call(['/bin/bash', '-i', '-c', command])
+    subprocess.run(command, shell=True, check=True)
+    # subprocess.check_call(['/bin/bash', '-i', '-c', command])
     #os.popen(command).read()
 
     outfolder = glob(f'{results}/{pept_length}mers_{run_id}*')[0] + '/res'
@@ -430,6 +431,7 @@ if __name__=='__main__':
 
         # peptides has to be a unique set because the dendogram is calculated for unique peptide sequences. Because peptides are 
         # used as labels, different length between peptides and the actual number of clusters (unique sequences) lead to an error.
+        peptides_dict = df.set_index('peptide_ID').to_dict()['peptide']
         peptides = sorted(list(set(df["peptide"].tolist()))) 
 
 
@@ -442,8 +444,11 @@ if __name__=='__main__':
         
         # Write peptides to csv files
         # Add steps to make filename and csv_path variables
+        csv_file = os.path.join(os.getcwd(), "cluster_peptides.csv")
+        filename = csv_file.split('/')[-1].split('.')[0]
         write_peptides_to_csv(peptides, csv_path)
         df = pd.read_csv(csv_path)
+        peptides_dict = df.set_index('peptide_ID').to_dict()['peptide']
         peptides = sorted(list(set(df["peptide"].tolist())))
     
     #Add a a.gibbs argument. If true, use gibbscluster, otherwise use this.
@@ -457,15 +462,31 @@ if __name__=='__main__':
             frag_len = a.peptides_length
         )
         representatives = cluster_representatives(clusters, a.matrix)
+        ID_clusters = {}
+        for cluster_num, peptide_list in clusters.items():
+            new_peptide_list = []
+            for peptide in peptide_list:
+                peptide_id = [k for k, v in peptides_dict.items() if v == peptide]
+                new_peptide_list.append(peptide_id[0])
+            ID_clusters[cluster_num] = new_peptide_list
+        representatives_IDs = {}
+        for cluster_num, peptide in representatives.items():
+            peptide_id = list(peptides_dict.keys())[list(peptides_dict.values()).index(peptide)]
+            representatives_IDs[cluster_num] = peptide_id
         pickle.dump(representatives, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_cluster_representatives.pkl", "wb"))
         pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
+        pickle.dump(representatives_IDs, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_cluster_representatives_IDs.pkl", "wb"))
+        pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_ID_clusters.pkl", "wb"))
+
     else:
         method = 'gibbscluster'
         clusters = gibbscluster_peptides(peptides, n_jobs=a.njobs, 
                     pept_length=a.peptides_length, n_clusters=a.clusters,
                     rm_outputs=False)
         pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
+        print(clusters)
         clusters_dict = {key : clusters[key]['peptides'] for key in clusters}
+        print(clusters_dict)
 
     if a.update_csv: 
         for idx,cluster in enumerate(clusters.keys()):
