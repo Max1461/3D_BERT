@@ -489,10 +489,8 @@ if __name__=='__main__':
         print(clusters)
         clusters_dict = {key : clusters[key]['peptides'] for key in clusters}
         print(clusters_dict)
-        representatives_dict = {f"clust_{i}": {"representative": max(clust["peptides"], key=lambda x: float(clust["self_score"][clust["peptides"].index(x)])),
-                      "peptides": clust["peptides"],
-                      "cores": clust["cores"],
-                      "self_score": clust["self_score"]} 
+        representatives_dict = {f"clust_{i}": {"representative": max(clust["peptides"], 
+                    key=lambda x: float(clust["self_score"][clust["peptides"].index(x)]))} 
             for i, clust in enumerate(clusters.values())}
         print(representatives_dict)
 
