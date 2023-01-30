@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html>
+<head><title>Gibbs Cluster Report</title>
+<style type="text/css">
+body { 
+font-family: Arial, Helvetica, sans-serif;
+color: #000000;background-color: #FFFFFF;
+font-size: 15px; border: 0;
+margin: 0;
+padding: 0;
+}
+div.header {
+color: #FFFFFF;
+background-color: #FF3399;
+font-size: 200%;
+font-weight: bold;
+border:0;
+margin:0;
+padding: 0.5em;
+}
+div.footer {
+color: #FFFFFF;
+background-color: #FF3399;
+font-size: 130%;
+font-weight: bold;
+border:0;
+margin:0;
+padding: 0.5em;
+}
+div.main {
+margin-left: 2em;
+margin-right: 2em;
+}
+a:link {
+color: #FF3399
+}
+a:visited {
+color: #FF3399
+}
+a:hover {
+color: #642EFE
+}
+a:active {
+color: #642EFE
+}
+</style>
+</head>
+<body><div class="header"> GibbsCluster report</div>
+<div class="main">
+<br><b>Version:</b> 2.0
+<br><b>Run ID:</b> 80954
+<br><b>Run name:</b> gibbs_80954
+<br><b>Platform:</b> Linux x86_64
+<br><br><br>Read <b>200 unique sequences</b> from file<br><br>
+<b>Settings:</b><br><small>
+<b>Shift moves and cluster moves activated</b><br>
+Number of clusters: 1 - 5<br>
+Motif length: 9<br>
+Initial MC temperture: 1.5<br>
+Number of temperature steps: 20<br>
+Number of iterations x Sequence x Tstep: 10<br>
+Max insertion length: 0<br>
+Max deletion length: 0<br>
+Interval between Single Peptide moves: 20<br>
+Interval between Phase Shift moves: 100<br>
+Number of initial seeds: 1<br>
+Penalty lambda: 0.8<br>
+Weight on small clusters: 5<br>
+Preference for hydrophobic P1: 0<br>Sequence weighting type: 0<br>
+Background model: Uniprot pre-calculated<br>
+Use trash cluster to remove outliers: 0<br>
+</small>
+<b>Install Seq2Logo to visualize the sequence motifs!</b><br>
+</font><hr><table width="100%" border="0">
+<tr valign="top"><td width:50%;text-align:center>
+<div style="padding-left: 2em">
+</div>
+</td> <td width:50%;text-align:center>
+<div style="padding-left: 2em"></div></td></tr><tr valign="middle"><td width:50%;text-align:center>
+</td> <td width:50%;text-align:left;vertical-align:middle>
+</td></tr></table>
+<br>
+<hr>
+<table width="100%" border='0'>
+<tr valign="top"><td colspan='2'>
+<h3>RESULTS for 1 CLUSTERS</h3>
+</td></tr><tr valign='top'> <td> <font face="COURIER">
+ Final Average KLD: <b>6.048446
+</b></font><br><br>
+<table align='left'>
+<font face="COURIER"><tr valign='top'> <th>&nbsp;Group&nbsp;</th> <th>&nbsp;Size&nbsp;</th> <th>&nbsp;KLD&nbsp;</th> <th>&nbsp;Seq2Logo&nbsp;</th> <th>&nbsp;Matrix&nbsp;</th> </tr>
+<tr valign='top'> <td>&nbsp;1&nbsp;</td> <td>&nbsp;200&nbsp;</td> <td>&nbsp;6.048&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='PRPDTRHLH
+PWSKILAYN
+MRPFNNILN
+FIIFNKQFH
+FWNAKPLKD
+MLEASTIYR
+KISQLQKNF
+GWSDLPPFT
+MTYSHHACR
+PNELSLALS
+AIFQSAMTK
+MKLRKPKHK
+KAYKIISLK
+AAYYFMKFR
+RWFFRPLRK
+RIPLGGNGA
+AVNKSNKQR
+KLYGLSQGY
+RLYYDSMSY
+FDNQRPNMS
+PLLSAGIFH
+APALATGSF
+PFSEGKALW
+PGTSLTISD
+PIPRRNVAT
+PNITSTALS
+RSLAKSLHW
+PTNAVVKMK
+AETRMGYMR
+TIERAPMFW
+ALSSIAATK
+MQDWYPKLK
+SIIPSGPLK
+CIYQSPVRK
+RISSKRYGR
+MQHRFPIAK
+DAPKRPPSA
+KRNQTFIPW
+PKRNRSILP
+PIVIAPAMN
+PFGQQRVFY
+KRQGSTPLW
+VTSSGAIYK
+YILWKDIFH
+TLWKAGILY
+AVYSICKFY
+GVYSVFYLY
+AQLFKPLTK
+AWPLLPHVI
+KLRETGAPL
+PASFFIKLF
+ALIRATSTR
+MVYVPHVIE
+RTNRNELLL
+KVSWRWMVY
+PLMMLSPLL
+AWQRTLKLS
+ASFDKAKLK
+AIFQASMTK
+FTYLCGFIK
+GVSENIFLK
+RTLHPFGCK
+PQYFTFDLK
+KLSSMAAER
+RHTVNPIVT
+YDPRNQKTD
+LRHGQRSLF
+NISFKSINK
+IVKYKQYLK
+PNVDLTTMM
+PAIIRPSFW
+ASFIAGMLV
+MVIFRLMRD
+RLSLYGRYN
+PIMFSNKMC
+EWLSSKDRR
+RLIEKTNEK
+YKPESRPFD
+PSDGKCNLN
+ALFGQALHK
+KLYKMRIPR
+MQVKVPKIR
+PMFSGKVLD
+ALLAVGATK
+YIDQMCVFK
+RIYCQENPY
+ERLSRMAIK
+PNLYKLIYH
+MVIENGILK
+RQIAMSLFI
+AAAQGQAPL
+RTLNLFRYK
+PATAQMALP
+PADERAVAN
+MTDAIRTLK
+ITPVVFYRW
+YMFESKSMK
+PKFTRMVVS
+IILAHFLYK
+RLPAGSRIW
+VLIDAGLPK
+RTKLMSNIK
+PRWYFYYLW
+KVFFGPIYY
+VRPQVPITR
+RLHQQALGC
+PSPYNSRFC
+GMSSRAIAR
+MTIREFPRK
+GRIYKRSLK
+PAFYTPTAR
+PTDGLVGFC
+PASFFSSWV
+PAYIRNTLY
+DTLARSICE
+PTWLGAAIE
+HISRQRLPW
+YTMKPHTFN
+EFILQKIFK
+LFMYYTKYW
+PVMSRFAAW
+PGEIKPKFD
+PKPGTRMVP
+MGFGHRIYK
+RTFNEDLFR
+PIFIRRLPS
+RSPRTLNAW
+RAYRNALSM
+PIMYYTKFM
+PTVACPKVS
+YPSFMSRPH
+ISPEQTQTY
+MRWRHPRVV
+PEFERRTLQ
+PRRSLKAFD
+PNRQLGSMH
+RVYINVVVK
+PLIWAYLSK
+PFMSDLQFP
+RSIAMLKSK
+PIGENSPLQ
+AVFKDSFLR
+MWFTFPVRP
+PTRCRLEIV
+LRDNRAALL
+PVPISHLYI
+IVFNLPVSK
+YTNEIIGYK
+LIFCHSKKK
+YSYASAKWW
+FPRGQGVPI
+LTYRHKVVK
+MLSRVAAVK
+FVSNNGKVP
+PANKEESIH
+RLVSLALHK
+PVYPGIKVR
+PAAMPHLLN
+YIFFASFYY
+PLQLRFRMI
+YLRRMDSVK
+PYPQPQPFM
+RISKNRGPT
+PVLEKALMP
+PLARTAKVA
+RWGVTLYVK
+PSLMSRVVA
+VAMSTWSFY
+AVLQSGFRK
+QAMRAPKVR
+KPFRMVSLV
+VAFELAPKW
+IWYPKGPIR
+RLLGRKRMT
+PTSFGPLPA
+AISRLRTQK
+AIFASSMTK
+RARIKTRLF
+RTFGKLPYR
+RVMANNVKK
+VLSHGWAYK
+LLFYCPQKK
+PTFLQEALY
+MQFKLGIPK
+PQIGGEAIK
+RLIARKLQW
+AQVRRAMCA
+LRPQASGVY
+LWSFKPTMQ
+PAIVREAIE
+MFEQYFIYW
+GWRNQPAAT
+GTFQRKYMA
+GVFKMGAFM
+HWNYFPAPR
+PSIQSRGLI
+RVYRRRLAQ
+ITQACPKFF
+PSIFSTEVH
+MPREDAHFI
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr></font><tr valign='top'> <td colspan='4'><br>Raw <a href="./res/gibbs.1g.out" TARGET='_blank'>Clustering Report</a>
+<br>Formatted <a href="./res/gibbs.1g.ds.out" TARGET='_blank'>Clustering Solution</a>
+<br>Clustered <a href="./cores/gibbs.1g.cores" TARGET='_blank'>Alignment Cores</a></td></tr>
+</table>
+</td> <td width:50%;text-align:left;vertical_align:middle>
+</td></tr>
+<tr><td colspan="2"></td></tr>
+<tr valign="top"><td colspan='2'>
+<h3>RESULTS for 2 CLUSTERS</h3>
+</td></tr><tr valign='top'> <td> <font face="COURIER">
+ Final Average KLD: <b>6.164928
+</b></font><br><br>
+<table align='left'>
+<font face="COURIER"><tr valign='top'> <th>&nbsp;Group&nbsp;</th> <th>&nbsp;Size&nbsp;</th> <th>&nbsp;KLD&nbsp;</th> <th>&nbsp;Seq2Logo&nbsp;</th> <th>&nbsp;Matrix&nbsp;</th> </tr>
+<tr valign='top'> <td>&nbsp;1&nbsp;</td> <td>&nbsp;105&nbsp;</td> <td>&nbsp;5.957&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='RIYCQENPY
+MGFGHRIYK
+MTIREFPRK
+AIFASSMTK
+DLAWQRTLK
+ILAALFMYY
+RVYINVVVK
+AVYSICKFY
+AVNKSNKQR
+ALLAVGATK
+ALYSYASAK
+FTYLCGFIK
+LIFCHSKKK
+RVMANNVKK
+IITPVVFYR
+PWSKILAYN
+ALFFIIFNK
+TLHPFGCKS
+TLWKAGILY
+CIYQSPVRK
+VLIDAGLPK
+RLIEKTNEK
+IVFNLPVSK
+ALMRWRHPR
+TYSHHACRN
+RSLAKSLHW
+VVMQVKVPK
+KVSWRWMVY
+EINEWLSSK
+RLYYDSMSY
+GVSENIFLK
+MTDAIRTLK
+RQFVSNNGK
+KVFFGPIYY
+TVNPIVTEK
+TLYVKALTK
+AISRLRTQK
+MQHRFPIAK
+AANEIRISK
+YIFFASFYY
+AIFQASMTK
+SVITQACPK
+AIFQSAMTK
+YTNEIIGYK
+GVYSVFYLY
+AMSTWSFYH
+TLSERISSK
+HWNYFPAPR
+YMFESKSMK
+KLYKMRIPR
+LTYRHKVVK
+GVFKMGAFM
+KLSSMAAER
+PTNAVVKMK
+MKLRKPKHK
+RSIAMLKSK
+MLEASTIYR
+VLSHGWAYK
+MFEQYFIYW
+MVIENGILK
+ALDGTFQRK
+ALFGQALHK
+VTSSGAIYK
+VWNRLIARK
+CVFKFIVAK
+GVYPSFMSR
+AVLQSGFRK
+TLNLFRYKW
+TIERAPMFW
+TLARSICEK
+LIWAYLSKK
+VAFELAPKW
+RLSLYGRYN
+YLYLWSFKP
+RTKLMSNIK
+LVGRLGKGY
+TVLEFILQK
+QIQAWPLLP
+ILWKDIFHK
+MMVIFRLMR
+KAYKIISLK
+IILAHFLYK
+MQFKLGIPK
+KLYGLSQGY
+NISFKSINK
+AVFKDSFLR
+YSLHIVKYK
+MLSRVAAVK
+AYYFMKFRY
+ASFDKAKLK
+RWFFRPLRK
+KLAETRMGY
+GMSSRAIAR
+ALKISQLQK
+TLNAWVNYV
+NRNELLLMK
+RLVSLALHK
+HIHIHPLAR
+ALIRATSTR
+MQDWYPKLK
+WIYDPRNQK
+MVSLVGCWN
+IWYPKGPIR
+LLFYCPQKK
+SIIPSGPLK
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;2&nbsp;</td> <td>&nbsp;95&nbsp;</td> <td>&nbsp;6.395&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='PIPRRNVAT
+PYPQPQPFM
+QRPNMSRHH
+PASFFSSWV
+PERTFGKLP
+PFGQQRVFY
+PNRQLGSMH
+LRETGAPLP
+FRAYRNALS
+PASFFIKLF
+GRIYKRSLK
+IPLGGNGAM
+PMFSGKVLD
+PFSEGKALW
+PADERAVAN
+PHVIEEVMR
+PNITSTALS
+PVLEKALMP
+PSDGKCNLN
+PRPDTRHLH
+PAGSRIWLG
+PKFTRMVVS
+PRQIAMSLF
+PAYIRNTLY
+YKPESRPFD
+PKRNRSILP
+PAAMPHLLN
+PANKEESIH
+PPFTQHLLG
+KRQGSTPLW
+PRWYFYYLW
+PAQLFKPLT
+PNELSLALS
+PPGTSLTIS
+PNVDLTTMM
+PAIIRPSFW
+PQASGVYMS
+PIGENSPLQ
+PIVIAPAMN
+PIMYYTKFM
+ERLSRMAIK
+PVRPQVPIT
+APALATGSF
+GLPTRCRLE
+PFMSDLQFP
+DAPKRPPSA
+RARIKTRLF
+PNMSLLRDN
+PSKRNQTFI
+PKLMEEYLR
+PSIQSRGLI
+PAIVREAIE
+PSPYNSRFC
+PSLMSRVVA
+MRPFNNILN
+PTFLQEALY
+LRHGQRSLF
+LAQVRRAMC
+PKYTMKPHT
+PAFYTPTAR
+PSIFSTEVH
+PVRPQVPHT
+PQIGGEAIK
+PQYFTFDLK
+PKVSFEPIY
+PEQTQTYNI
+PALSSIAAT
+PTDGLVGFC
+NQPAATALT
+PGEIKPKFD
+MPREDAHFI
+PPTSFGPLP
+TRVYRRRLA
+PLLSAGIFH
+PEFERRTLQ
+PIMFSNKMC
+PTWLGAAIE
+PLMMLSPLL
+PKPGTRMVP
+PATAQMALP
+PPIFIRRLP
+PVPISHLYI
+PGIKVRQLT
+RLLGRKRMT
+PRRSLKAFD
+PVMSRFAAW
+FPRGQGVPI
+PLQLRFRMI
+IRLHQQALG
+PNLYKLIYH
+APKVRLSLW
+LAAAQGQAP
+PLKDVERLT
+PHISRQRLP
+IRTFNEDLF
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr></font><tr valign='top'> <td colspan='4'><br>Raw <a href="./res/gibbs.2g.out" TARGET='_blank'>Clustering Report</a>
+<br>Formatted <a href="./res/gibbs.2g.ds.out" TARGET='_blank'>Clustering Solution</a>
+<br>Clustered <a href="./cores/gibbs.2g.cores" TARGET='_blank'>Alignment Cores</a></td></tr>
+</table>
+</td> <td width:50%;text-align:left;vertical_align:middle>
+</td></tr>
+<tr><td colspan="2"></td></tr>
+<tr valign="top"><td colspan='2'>
+<h3>RESULTS for 3 CLUSTERS</h3>
+</td></tr><tr valign='top'> <td> <font face="COURIER">
+ Final Average KLD: <b>5.170737
+</b></font><br><br>
+<table align='left'>
+<font face="COURIER"><tr valign='top'> <th>&nbsp;Group&nbsp;</th> <th>&nbsp;Size&nbsp;</th> <th>&nbsp;KLD&nbsp;</th> <th>&nbsp;Seq2Logo&nbsp;</th> <th>&nbsp;Matrix&nbsp;</th> </tr>
+<tr valign='top'> <td>&nbsp;1&nbsp;</td> <td>&nbsp;79&nbsp;</td> <td>&nbsp;6.456&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='FMKLAETRM
+KPNELSLAL
+YPKGPIRFV
+CPIGENSPL
+YPKLKNSYV
+TPVVFYRWM
+FPPTSFGPL
+YTRVYRRRL
+RPNITSTAL
+KLAQVRRAM
+RERLSRMAI
+RPNMSRHHF
+APKRPPSAF
+WSRTGTRLL
+RPNRQLGSM
+SPSKRNQTF
+WPLLPHVIF
+LPTWLGAAI
+HIRLHQQAL
+FPVRPQVPI
+SPEQTQTYN
+IPLGGNGAM
+IPKRNRSIL
+FPSIFSTEV
+IKRQGSTPL
+RPQASGVYM
+RNQPAATAL
+HPAAMPHLL
+LPYPQPQPF
+KLRHGQRSL
+KLRETGAPL
+CPKVSFEPI
+TPFGQQRVF
+LPRRSLKAF
+CYKPESRPF
+RARIKTRLF
+FPIAKVEPV
+LPEFERRTL
+RSRLVSLAL
+MPREDAHFI
+AAAQGQAPL
+APSPYNSRF
+APALATGSF
+FPPGTSLTI
+LPAIVREAI
+YPSFMSRPH
+RPRQIAMSL
+FPAPRAETL
+LIRATSTRI
+LPAGSRIWL
+FPRGQGVPI
+QPKPGTRMV
+FPKYTMKPH
+SPRTLNAWV
+TPKFTRMVV
+LPTRCRLEI
+SPRWYFYYL
+VPKLMEEYL
+LPLMMLSPL
+QIRTFNEDL
+IPRRNVATL
+SPLQLRFRM
+IPSIQSRGL
+LPQIGGEAI
+LPPFTQHLL
+LPRPDTRHL
+FPVRPQVPH
+IVRTNRNEL
+FFRPLRKPY
+RPVPISHLY
+WNRLIARKL
+YPSLMSRVV
+RPPIFIRRL
+KPFRMVSLV
+KISQLQKNF
+IPTFLQEAL
+RPLRMPAYI
+LPQYFTFDL
+HPAQLFKPL
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;2&nbsp;</td> <td>&nbsp;43&nbsp;</td> <td>&nbsp;4.051&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='AAYYFMKFR
+ALSMPIRMN
+PIVIAPAMN
+QAMRAPKVR
+PAIIRPSFW
+PLKDVERLT
+PIMYYTKFM
+PHISRQRLP
+PHVIEEVMR
+PATAQMALP
+MENSTMTIR
+MQVKVPKIR
+PALSSIAAT
+PNLYKLIYH
+PERTFGKLP
+PVMSRFAAW
+PLLSAGIFH
+PVLEKALMP
+PTNAVVKMK
+KLMSNIKMN
+PTDGLVGFC
+LANMTDAIR
+PVYPGIKVR
+PFMSDLQFP
+PASFFIKLF
+GMSSRAIAR
+PIMFSNKMC
+PMFSGKVLD
+AVYSICKFY
+FVSNNGKVP
+LVNAISRLR
+PNVDLTTMM
+PWSKILAYN
+PGEIKPKFD
+PLARTAKVA
+PADERAVAN
+PAFYTPTAR
+PNMSLLRDN
+ASFDKAKLK
+PSDGKCNLN
+PFSEGKALW
+PFNNILNLS
+PANKEESIH
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;3&nbsp;</td> <td>&nbsp;78&nbsp;</td> <td>&nbsp;4.487&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='ALFMYYTKY
+ISFKSINKQ
+LFFWYTNEI
+VAVNKSNKQ
+LIWAYLSKK
+KLYGLSQGY
+RIYKCYSRF
+MFESKSMKT
+KVSWRWMVY
+LMRWRHPRV
+TLARSICEK
+YIFFASFYY
+LYKMRIPRH
+MFEQYFIYW
+VFKMGAFMY
+AIFASSMTK
+VLKERLIEK
+KYLYLWSFK
+LLAVGATKG
+VAMSTWSFY
+LSRVAAVKF
+AVLQSGFRK
+RVMANNVKK
+LFGQALHKA
+LYGRYNCKC
+LIFCHSKKK
+ILAHFLYKE
+LAWQRTLKL
+AIFQASMTK
+SFFSSWVQA
+IYDPRNQKT
+TYLCGFIKS
+LSERISSKR
+LSSMAAERR
+IVFNLPVSK
+TYRHKVVKS
+MQFKLGIPK
+RLYYDSMSY
+AIFQSAMTK
+VAFELAPKW
+VLEFILQKI
+TSSGAIYKI
+VLSHGWAYK
+TLHPFGCKS
+CVFKFIVAK
+MLEASTIYR
+SIAMLKSKR
+VYINVVVKL
+LYVKALTKH
+LYSYASAKW
+TLNLFRYKW
+ILWKDIFHK
+RIYKRSLKL
+KVFFGPIYY
+LFRMKAYKI
+TVNPIVTEK
+RIYCQENPY
+VITQACPKF
+TYKCLAVFK
+SYGVYSVFY
+KLRKPKHKK
+CIYQSPVRK
+TYSHHACRN
+EYRVRSLAK
+VSENIFLKW
+INEWLSSKD
+LIDAGLPKL
+ALDGTFQRK
+ANEIRISKN
+LLFYCPQKK
+LFFIIFNKQ
+TLWKAGILY
+MLVGRLGKG
+TIERAPMFW
+VIENGILKN
+IIPSGPLKI
+VKYKQYLKS
+MVIFRLMRD
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr></font><tr valign='top'> <td colspan='4'><br>Raw <a href="./res/gibbs.3g.out" TARGET='_blank'>Clustering Report</a>
+<br>Formatted <a href="./res/gibbs.3g.ds.out" TARGET='_blank'>Clustering Solution</a>
+<br>Clustered <a href="./cores/gibbs.3g.cores" TARGET='_blank'>Alignment Cores</a></td></tr>
+</table>
+</td> <td width:50%;text-align:left;vertical_align:middle>
+</td></tr>
+<tr><td colspan="2"></td></tr>
+<tr valign="top"><td colspan='2'>
+<h3>RESULTS for 4 CLUSTERS</h3>
+</td></tr><tr valign='top'> <td> <font face="COURIER">
+ Final Average KLD: <b>5.401335
+</b></font><br><br>
+<table align='left'>
+<font face="COURIER"><tr valign='top'> <th>&nbsp;Group&nbsp;</th> <th>&nbsp;Size&nbsp;</th> <th>&nbsp;KLD&nbsp;</th> <th>&nbsp;Seq2Logo&nbsp;</th> <th>&nbsp;Matrix&nbsp;</th> </tr>
+<tr valign='top'> <td>&nbsp;1&nbsp;</td> <td>&nbsp;12&nbsp;</td> <td>&nbsp;3.443&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='PIMFSNKMC
+AFMYTKTYD
+PMFSGKVLD
+PIVIAPAMN
+TRLLGRKRM
+PLLSAGIFH
+PAFYTPTAR
+PGEIKPKFD
+PNLYKLIYH
+PIMYYTKFM
+YILWKDIFH
+QAMRAPKVR
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;2&nbsp;</td> <td>&nbsp;79&nbsp;</td> <td>&nbsp;6.509&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='IKRQGSTPL
+IPKRNRSIL
+CPKVSFEPI
+QPKPGTRMV
+RPNRQLGSM
+LPNVDLTTM
+RPNITSTAL
+MPREDAHFI
+APKRPPSAF
+MLKSKRDAL
+SPADERAVA
+LPYPQPQPF
+VPHISRQRL
+SPSKRNQTF
+LPRRSLKAF
+IPRRNVATL
+TPVVFYRWM
+AAAQGQAPL
+FPPGTSLTI
+CYKPESRPF
+IPTFLQEAL
+RPVPISHLY
+RPRQIAMSL
+YPSLMSRVV
+FPPTSFGPL
+IVRTNRNEL
+FPVRPQVPI
+SPRTLNAWV
+MPAYIRNTL
+LPVNVAFEL
+LPTRCRLEI
+LPRPDTRHL
+GPATAQMAL
+LPPFTQHLL
+IPSIQSRGL
+VPKLMEEYL
+APALATGSF
+KLAQVRRAM
+FPRGQGVPI
+KLRETGAPL
+HPAAMPHLL
+LPEFERRTL
+CPIGENSPL
+YPKLKNSYV
+RARIKTRLF
+RPNMSRHHF
+YPGIKVRQL
+RPQASGVYM
+APSPYNSRF
+LPAGSRIWL
+LPAIVREAI
+IPLGGNGAM
+RERLSRMAI
+SPEQTQTYN
+LPLMMLSPL
+HIRLHQQAL
+IPFSEGKAL
+FPSIFSTEV
+HPAQLFKPL
+VPVLEKALM
+YPSFMSRPH
+KPFRMVSLV
+YPKGPIRFV
+VPHVIEEVM
+KLRHGQRSL
+LPQIGGEAI
+FPKYTMKPH
+LPQYFTFDL
+MPTDGLVGF
+HPSDGKCNL
+NPANKEESI
+LPAIIRPSF
+SPLQLRFRM
+KPNELSLAL
+RPFNNILNL
+FPASFFIKL
+TPKFTRMVV
+RPPIFIRRL
+LLRDNRAAL
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;3&nbsp;</td> <td>&nbsp;49&nbsp;</td> <td>&nbsp;4.229&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='LWSFKPTMQ
+IIPSGPLKI
+TYLCGFIKS
+RWFFRPLRK
+IWAYLSKKR
+TDAIRTLKK
+MWFTFPVRP
+CIYQSPVRK
+MKLRKPKHK
+HIHIHPLAR
+MQHRFPIAK
+CVFKFIVAK
+TIREFPRKS
+LWKAGILYD
+FWNAKPLKD
+MGFGHRIYK
+GWRNQPAAT
+VWNRLIARK
+TWLGAAIEW
+VPWSKILAY
+LWRRTKLMS
+PVMSRFAAW
+MLEASTIYR
+RSLAKSLHW
+MFEQYFIYW
+PRWYFYYLW
+LIFCHSKKK
+EWLSSKDRR
+MMVIFRLMR
+LYSYASAKW
+MKAYKIISL
+LLFYCPQKK
+MFESKSMKT
+VYSVFYLYL
+LAWQRTLKL
+HWNYFPAPR
+TLNLFRYKW
+TIERAPMFW
+SDLQFPMTW
+TVLEFILQK
+TFQRKYMAF
+IILAHFLYK
+LFMYYTKYW
+IVFNLPVSK
+AWPLLPHVI
+SGAIYKIYW
+VSENIFLKW
+QQRVFYIYW
+VKYKQYLKS
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;4&nbsp;</td> <td>&nbsp;60&nbsp;</td> <td>&nbsp;5.292&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='RTFNEDLFR
+KVSWRWMVY
+RLVSLALHK
+VLIDAGLPK
+ALLAVGATK
+RISKNRGPT
+LLPTNAVVK
+MVIENGILK
+AVYSICKFY
+DLFFWYTNE
+RTLHPFGCK
+ALFFIIFNK
+RIYKRSLKL
+RVYINVVVK
+ASFFSSWVQ
+KLYGLSQGY
+KLAETRMGY
+GMLVGRLGK
+AIFASSMTK
+RHTVNPIVT
+ASFDKAKLK
+ALKISQLQK
+RLIEKTNEK
+SVITQACPK
+KVLSHGWAY
+RVMANNVKK
+RISSKRYGR
+AMSTWSFYH
+RLYYDSMSY
+ERTFGKLPY
+KLSSMAAER
+ALFGQALHK
+VVMQVKVPK
+AIFQASMTK
+RQFVSNNGK
+AYYFMKFRY
+AIFQSAMTK
+KLYKMRIPR
+RVAVNKSNK
+ALMRWRHPR
+GMSSRAIAR
+AISRLRTQK
+MQFKLGIPK
+MLSRVAAVK
+RIYCQENPY
+AVLQSGFRK
+AVFKDSFLR
+KVFFGPIYY
+DTLARSICE
+SLYGRYNCK
+RVYRRRLAQ
+MTYSHHACR
+RAYRNALSM
+ALIRATSTR
+NISFKSINK
+LTYRHKVVK
+ALSSIAATK
+TLYVKALTK
+WIYDPRNQK
+YIFFASFYY
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr></font><tr valign='top'> <td colspan='4'><br>Raw <a href="./res/gibbs.4g.out" TARGET='_blank'>Clustering Report</a>
+<br>Formatted <a href="./res/gibbs.4g.ds.out" TARGET='_blank'>Clustering Solution</a>
+<br>Clustered <a href="./cores/gibbs.4g.cores" TARGET='_blank'>Alignment Cores</a></td></tr>
+</table>
+</td> <td width:50%;text-align:left;vertical_align:middle>
+</td></tr>
+<tr><td colspan="2"></td></tr>
+<tr valign="top"><td colspan='2'>
+<h3>RESULTS for 5 CLUSTERS</h3>
+</td></tr><tr valign='top'> <td> <font face="COURIER">
+ Final Average KLD: <b>4.488979
+</b></font><br><br>
+<table align='left'>
+<font face="COURIER"><tr valign='top'> <th>&nbsp;Group&nbsp;</th> <th>&nbsp;Size&nbsp;</th> <th>&nbsp;KLD&nbsp;</th> <th>&nbsp;Seq2Logo&nbsp;</th> <th>&nbsp;Matrix&nbsp;</th> </tr>
+<tr valign='top'> <td>&nbsp;1&nbsp;</td> <td>&nbsp;18&nbsp;</td> <td>&nbsp;2.721&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='GHRIYKCYS
+WSRTGTRLL
+QVRRAMCAD
+WNRLIARKL
+ACAPFMSDL
+DFRAYRNAL
+CQLTYRHKV
+DSFTYLCGF
+QIRTFNEDL
+RHDTLARSI
+WRRTKLMSN
+IVRTNRNEL
+AHFLYKEFT
+PHRVMANNV
+WCETLSERI
+CFRVYINVV
+LYGRYNCKC
+VIFRLMRDT
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;2&nbsp;</td> <td>&nbsp;51&nbsp;</td> <td>&nbsp;4.176&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='RLYYDSMSY
+YSYASAKWW
+TIERAPMFW
+KYLYLWSFK
+KVFFGPIYY
+KVSWRWMVY
+WYPKGPIRF
+AIFQSAMTK
+AVYSICKFY
+ASFDKAKLK
+ALIRATSTR
+AIFASSMTK
+RSLAKSLHW
+KISQLQKNF
+WYPKLKNSY
+YVKALTKHF
+ISPEQTQTY
+RIYCQENPY
+VAFELAPKW
+YCPQKKKSQ
+VITQACPKF
+AIFQASMTK
+KLYKMRIPR
+RKPKHKKSF
+RAPKVRLSL
+GAFMYTKTY
+LHPFGCKSN
+VLSHGWAYK
+YSHHACRNY
+KLYGLSQGY
+LVGRLGKGY
+ISFKSINKQ
+IREFPRKSY
+RSPRTLNAW
+YIFFASFYY
+YNSRFCAGW
+AISRLRTQK
+VNPIVTEKY
+YIDQMCVFK
+VAMSTWSFY
+KLAETRMGY
+AANEIRISK
+RSIAMLKSK
+RTAKVAQSY
+KMLEASTIY
+LIFCHSKKK
+RLPAGSRIW
+IVFNLPVSK
+YEPLIWAYL
+YMFESKSMK
+YSLHIVKYK
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;3&nbsp;</td> <td>&nbsp;27&nbsp;</td> <td>&nbsp;3.494&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='VNSPADERA
+WRNQPAATA
+WNYFPAPRA
+ALFGQALHK
+ALLAVGATK
+MVIENGILK
+VLIDAGLPK
+MLSRVAAVK
+GGTRVAVNK
+GLSPSKRNQ
+WRHPRVVSD
+YQSPVRKLK
+GMSSRAIAR
+TLWKAGILY
+ALSSIAATK
+TNEKDQKNK
+KLSSMAAER
+ANMTDAIRT
+AVFKDSFLR
+SIIPSGPLK
+VHHSPGEIK
+MQFKLGIPK
+WNAKPLKDV
+AVLQSGFRK
+VVMQVKVPK
+ILWKDIFHK
+WIYDPRNQK
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;4&nbsp;</td> <td>&nbsp;53&nbsp;</td> <td>&nbsp;4.903&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='MFEQYFIYW
+VPHISRQRL
+LPTNAVVKM
+FPASFFIKL
+YTRVYRRRL
+IFNKQFHQI
+TLNLFRYKW
+LPQYFTFDL
+RPPIFIRRL
+RPNRQLGSM
+FPSIFSTEV
+LFRMKAYKI
+LPAIVREAI
+LPTRCRLEI
+SPRWYFYYL
+RPNMSRHHF
+RPRQIAMSL
+SPLQLRFRM
+VSENIFLKW
+MPREDAHFI
+RSRLVSLAL
+LPTWLGAAI
+VPHVIEEVM
+MPAYIRNTL
+LPAIIRPSF
+HPIMYYTKF
+SPNMSLLRD
+SPASFFSSW
+LFFWYTNEI
+RERLSRMAI
+TPKFTRMVV
+TPVVFYRWM
+IPSIQSRGL
+YPIVIAPAM
+YYFMKFRYL
+VYSVFYLYL
+NPANKEESI
+MPNLYKLIY
+TPVMSRFAA
+LPNVDLTTM
+YPGIKVRQL
+RGRIYKRSL
+LPEFERRTL
+LFMYYTKYW
+INEWLSSKD
+DGTFQRKYM
+RPFNNILNL
+RPQASGVYM
+RPNITSTAL
+SGAIYKIYW
+IPAFYTPTA
+APIMFSNKM
+KPNELSLAL
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr><tr valign='top'> <td>&nbsp;5&nbsp;</td> <td>&nbsp;51&nbsp;</td> <td>&nbsp;5.522&nbsp;</td>
+<td><div style='display: inline;'><form style='display:inline; margin:0;' action='http://www.cbs.dtu.dk/biotools/Seq2Logo/index.php' method='POST' target='_blank'> <input type='hidden' name='INPASTE' value='CPKVSFEPI
+WPLLPHVIF
+IPKRNRSIL
+QPKPGTRMV
+AAAQGQAPL
+IPLGGNGAM
+HPAAMPHLL
+FPVRPQVPI
+HIRLHQQAL
+KLRETGAPL
+LPYPQPQPF
+LPRPDTRHL
+HPSDGKCNL
+CPIGENSPL
+FPVRPQVPH
+RPVPISHLY
+IPTFLQEAL
+FPRGQGVPI
+VPKLMEEYL
+MPTDGLVGF
+LEFILQKIF
+CYKPESRPF
+FFRPLRKPY
+ERTFGKLPY
+FPPTSFGPL
+KPFRMVSLV
+RARIKTRLF
+IPRRNVATL
+KLRHGQRSL
+EDLAWQRTL
+LPPFTQHLL
+VPVLEKALM
+FPKYTMKPH
+IKRQGSTPL
+HPAQLFKPL
+FPIAKVEPV
+GPATAQMAL
+LPLMMLSPL
+FPPGTSLTI
+APLLSAGIF
+IPFSEGKAL
+APKRPPSAF
+GPMFSGKVL
+YPSFMSRPH
+CGVPWSKIL
+APALATGSF
+TPFGQQRVF
+LPQIGGEAI
+VSNNGKVPH
+LPRRSLKAF
+YPSLMSRVV
+'/> <input type='submit' value='LOGO' /></form></div>
+ </td>
+</tr></font><tr valign='top'> <td colspan='4'><br>Raw <a href="./res/gibbs.5g.out" TARGET='_blank'>Clustering Report</a>
+<br>Formatted <a href="./res/gibbs.5g.ds.out" TARGET='_blank'>Clustering Solution</a>
+<br>Clustered <a href="./cores/gibbs.5g.cores" TARGET='_blank'>Alignment Cores</a></td></tr>
+</table>
+</td> <td width:50%;text-align:left;vertical_align:middle>
+</td></tr>
+<tr><td colspan="2"></td></tr>
+</table>
+<br><hr><br>Explain the <a href="http://www.cbs.dtu.dk/services/GibbsCluster/output.php" target="_blank">output</a>
+<br><br>
+Read the <a href="http://www.cbs.dtu.dk/services/GibbsCluster/instructions.php" target="_blank">instructions</a></div><br><br>
+<br><div class="footer"> Made with GibbsCluster version 2.0</div>
+</body></html>

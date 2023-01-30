@@ -1,4 +1,4 @@
-#! /bin/tcsh -f
+#! /lustre/BIF/nobackup/luppe003/anaconda3/envs/tcsh_env/bin/tcsh -f
 
 # This the main GibbsCluster 2.0 script. It only acts as the frontend to the
 # software proper, a compiled binary.

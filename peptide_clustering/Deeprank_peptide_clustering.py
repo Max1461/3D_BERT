@@ -244,10 +244,11 @@ def parse_gibbscluster_out(res_folder, n_clusters=10):
 
             clust_name = f"clust_{line.split()[1]}"
             if not clust_name in list(clusters.keys()):
-                clusters[clust_name] = {'peptides' : [], 'cores': []}
+                clusters[clust_name] = {'peptides' : [], 'cores': [], 'self_score': []}
 
-            clusters[clust_name]['cores'].append(line.split()[4]) #[3] is the peptide, [4] is the core
+            clusters[clust_name]['cores'].append(line.split()[4]) #[3] is the peptide, [4] is the core, [17] is the self score
             clusters[clust_name]['peptides'].append(line.split()[3])
+            clusters[clust_name]['self_score'].append(line.split()[17])
 
     return clusters
 
@@ -433,6 +434,7 @@ if __name__=='__main__':
         # used as labels, different length between peptides and the actual number of clusters (unique sequences) lead to an error.
         peptides_dict = df.set_index('peptide_ID').to_dict()['peptide']
         peptides = sorted(list(set(df["peptide"].tolist()))) 
+        print(len(peptides))
 
 
     if a.pdb_dir:
@@ -487,6 +489,12 @@ if __name__=='__main__':
         print(clusters)
         clusters_dict = {key : clusters[key]['peptides'] for key in clusters}
         print(clusters_dict)
+        representatives_dict = {f"clust_{i}": {"representative": max(clust["peptides"], key=lambda x: float(clust["self_score"][clust["peptides"].index(x)])),
+                      "peptides": clust["peptides"],
+                      "cores": clust["cores"],
+                      "self_score": clust["self_score"]} 
+            for i, clust in enumerate(clusters.values())}
+        print(representatives_dict)
 
     if a.update_csv: 
         for idx,cluster in enumerate(clusters.keys()):

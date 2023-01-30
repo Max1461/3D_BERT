@@ -1,0 +1,61 @@
+#Call: /lustre/BIF/nobackup/luppe003/Internship/peptide_clustering/gibbscluster-2.0/GibbsCluster-2.0e_SA.pl -f test.pep -P gibbs
+#Fri Jan 27 15:17:48 2023
+#Session ID: 122010
+#Run name: gibbs_122010
+#Read 200 unique sequences
+##### Settings: #####
+#Shift moves and cluster moves are activated
+#Number of clusters: 1 - 5
+#Motif length: 9
+#Initial MC temperture: 1.5
+#Number of temperature steps: 20
+#Number of iterations x Sequence x Tstep: 10
+#Max insertion length: 0
+#Max deletion length: 0
+#Interval between Single Peptide moves: 20
+#Interval between Phase Shift moves: 100
+#Number of initial seeds: 1
+#Penalty lambda: 0.8
+#Weight on small clusters: 5
+#Preference for hydrophobic P1: 0
+#Sequence weighting type: 0
+#Use trash cluster to remove outliers: 0
+#### Running Gibbs clustering...
+#Clustering with 1 groups, seed number 1
+#Clustering with 2 groups, seed number 1
+#Clustering with 3 groups, seed number 1
+#Clustering with 4 groups, seed number 1
+#Clustering with 5 groups, seed number 1
+#Clustering complete!
+### Determining seeds with highest KLD...
+#Best 1 groups, seed 1
+#Best 2 groups, seed 1
+#Best 3 groups, seed 1
+#Best 4 groups, seed 1
+#Best 5 groups, seed 1
+###Parsing result files...
+#RESULTS for 1 CLUSTERS
+#1 Final Average KLD: 6.048446
+#1	1	200	6.048
+#RESULTS for 2 CLUSTERS
+#2 Final Average KLD: 6.164928
+#2	1	105	5.957
+#2	2	95	6.395
+#RESULTS for 3 CLUSTERS
+#3 Final Average KLD: 5.170737
+#3	1	79	6.456
+#3	2	43	4.051
+#3	3	78	4.487
+#RESULTS for 4 CLUSTERS
+#4 Final Average KLD: 5.401335
+#4	1	12	3.443
+#4	2	79	6.509
+#4	3	49	4.229
+#4	4	60	5.292
+#RESULTS for 5 CLUSTERS
+#5 Final Average KLD: 4.488979
+#5	1	18	2.721
+#5	2	51	4.176
+#5	3	27	3.494
+#5	4	53	4.903
+#5	5	51	5.522
