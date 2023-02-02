@@ -254,7 +254,7 @@ def parse_gibbscluster_out(res_folder, n_clusters=10):
 
 
 def gibbscluster_peptides(peptides, n_jobs=1, 
-                            pept_length=15, n_clusters=10,
+                            pept_length=9, n_clusters=10,
                              rm_outputs=True):
     results = f'{os.getcwd()}'
     peptides_file = f'{results}/{filename}_pepitdes.txt'
@@ -478,21 +478,35 @@ if __name__=='__main__':
         pickle.dump(representatives, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_cluster_representatives.pkl", "wb"))
         pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
         pickle.dump(representatives_IDs, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_cluster_representatives_IDs.pkl", "wb"))
-        pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_ID_clusters.pkl", "wb"))
+        pickle.dump(ID_clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_ID_clusters.pkl", "wb"))
 
     else:
         method = 'gibbscluster'
         clusters = gibbscluster_peptides(peptides, n_jobs=a.njobs, 
                     pept_length=a.peptides_length, n_clusters=a.clusters,
                     rm_outputs=False)
-        pickle.dump(clusters, open(f"{filename}_{a.matrix}_{a.clusters}_{method}_clusters.pkl", "wb"))
-        print(clusters)
         clusters_dict = {key : clusters[key]['peptides'] for key in clusters}
-        print(clusters_dict)
         representatives_dict = {f"clust_{i}": {"representative": max(clust["peptides"], 
                     key=lambda x: float(clust["self_score"][clust["peptides"].index(x)]))} 
             for i, clust in enumerate(clusters.values())}
-        print(representatives_dict)
+        ID_clusters = {}
+        for cluster_num, peptide_list in clusters_dict.items():
+            new_peptide_list = []
+            for peptide in peptide_list:
+                peptide_id = [k for k, v in peptides_dict.items() if v == peptide]
+                new_peptide_list.append(peptide_id[0])
+            ID_clusters[cluster_num] = new_peptide_list
+        representatives_IDs_dict = {}
+        for peptide, seq in peptides_dict.items():
+            for clust, rep in representatives_dict.items():
+                if seq == rep['representative']:
+                    representatives_IDs_dict[clust] = {'representative': peptide}
+                    break
+
+        pickle.dump(representatives_dict, open(f"{filename}_{a.clusters}_{method}_cluster_representatives.pkl", "wb"))
+        pickle.dump(clusters_dict, open(f"{filename}_{a.clusters}_{method}_clusters.pkl", "wb"))
+        pickle.dump(representatives_IDs_dict, open(f"{filename}_{a.clusters}_{method}_cluster_representatives_IDs.pkl", "wb"))
+        pickle.dump(ID_clusters, open(f"{filename}_{a.clusters}_{method}_ID_clusters.pkl", "wb"))
 
     if a.update_csv: 
         for idx,cluster in enumerate(clusters.keys()):
