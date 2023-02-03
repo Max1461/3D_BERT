@@ -503,10 +503,12 @@ if __name__=='__main__':
                     representatives_IDs_dict[clust] = {'representative': peptide}
                     break
 
-        pickle.dump(representatives_dict, open(f"{filename}_{a.clusters}_{method}_cluster_representatives.pkl", "wb"))
-        pickle.dump(clusters_dict, open(f"{filename}_{a.clusters}_{method}_clusters.pkl", "wb"))
-        pickle.dump(representatives_IDs_dict, open(f"{filename}_{a.clusters}_{method}_cluster_representatives_IDs.pkl", "wb"))
-        pickle.dump(ID_clusters, open(f"{filename}_{a.clusters}_{method}_ID_clusters.pkl", "wb"))
+        cluster_count = len(clusters_dict)
+
+        pickle.dump(representatives_dict, open(f"{filename}_{cluster_count}_{method}_cluster_representatives.pkl", "wb"))
+        pickle.dump(clusters_dict, open(f"{filename}_{cluster_count}_{method}_clusters.pkl", "wb"))
+        pickle.dump(representatives_IDs_dict, open(f"{filename}_{cluster_count}_{method}_cluster_representatives_IDs.pkl", "wb"))
+        pickle.dump(ID_clusters, open(f"{filename}_{cluster_count}_{method}_ID_clusters.pkl", "wb"))
 
     if a.update_csv: 
         for idx,cluster in enumerate(clusters.keys()):
