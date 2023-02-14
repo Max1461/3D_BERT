@@ -6,9 +6,7 @@ Created on Tue Feb 14 09:05:20 2023
 """
 
 import os
-import math
 from Bio.PDB import PDBParser, PDBIO
-import numpy as np
 from numpy.linalg import norm
 from Bio.PDB import Select
 
@@ -73,13 +71,34 @@ class AtomSelect(Select):
     def accept_atom(self, atom):
         return atom in self.selected_atoms
 
-def select_atoms_within_radius(alpha_carbons, radius, structure, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
+def select_atoms_within_radius(alpha_carbons, radius, structure, pdb_filename, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
+    output_dir=""
+    # Extract the name of the PDB file without the extension
+    base_filename = os.path.basename(os.path.splitext(pdb_filename)[0])
+
+    # Initialize a counter for generating unique file names
+    counter = 1
+
+    # Determine output directory based on exclude options
+    if exclude_same_residue:
+        output_dir = os.path.join(output_dir, "exclude_same_residue")
+    if exclude_neighbours:
+        output_dir = os.path.join(output_dir, "exclude_neighbours")
+    if exclude_chain:
+        output_dir = os.path.join(output_dir, f"exclude_chain_{exclude_chain}")
+
+    # Check if output directory exists and create it if not
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     for center_atom in alpha_carbons:
         # Determine the start and end residue indices to exclude neighbours
         if exclude_neighbours:
             residue_ids = [residue.get_id()[1] for residue in center_atom.parent.get_list()]
             start_index = max(residue_ids.index(center_atom.get_parent().get_id()[1]) - 2, 0)
             end_index = min(start_index + 5, len(residue_ids))
+            start_index = max(start_index, 0)
+            end_index = min(end_index, len(residue_ids))
 
         # Iterate over alpha carbons and select the atoms within the radius of each alpha carbon
         selected_atoms = []
@@ -95,10 +114,15 @@ def select_atoms_within_radius(alpha_carbons, radius, structure, exclude_same_re
                     for atom in residue:
                         if is_within_radius(atom, center_atom, radius):
                             selected_atoms.append(atom)
+
         # Write selected atoms to a new PDB file
         io = PDBIO()
         io.set_structure(structure)
-        io.save(f'{center_atom.get_id()}.pdb', select=AtomSelect(selected_atoms))
+        output_filename = os.path.join(output_dir, f"{base_filename}_{counter}.pdb")
+        io.save(output_filename, select=AtomSelect(selected_atoms))
+
+        # Increment the counter for the next iteration
+        counter += 1
 
 
 
@@ -118,7 +142,10 @@ if __name__ == "__main__":
         peptide_chain_id = get_peptide_chain_id(pdb_file)
         
         structure, alpha_carbons = get_alpha_carbons(pdb_file, peptide_chain_id)
-        select_atoms_within_radius(alpha_carbons, radius, structure)
+        select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file)
+        select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_chain=peptide_chain_id)
+        select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_neighbours=True)
+
 
 
 
