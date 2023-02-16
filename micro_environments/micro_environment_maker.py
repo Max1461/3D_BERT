@@ -47,6 +47,16 @@ def get_peptide_chain_id(pdb_file):
 
 
 def get_alpha_carbons(pdb_file, chain_id):
+    """
+    Returns a list of alpha carbons of the residues in the specified chain of the PDB file.
+
+    Args:
+        pdb_file (str): The path to the PDB file.
+        chain_id (str): The identifier of the chain to select.
+
+    Returns:
+        A tuple containing the parsed PDB structure and a list of alpha carbon atoms.
+    """
     # Initialize parser and read PDB file
     parser = PDBParser()
     structure = parser.get_structure('example', pdb_file)
@@ -63,12 +73,32 @@ def get_alpha_carbons(pdb_file, chain_id):
     return structure, alpha_carbons
 
 def is_within_radius(atom, center_atom, radius):
+    """
+    Returns a boolean indicating whether the given atom is within the specified radius of the center atom.
+
+    Args:
+        atom (Atom): The atom to check.
+        center_atom (Atom): The center atom.
+        radius (float): The radius to check against.
+
+    Returns:
+        True if the atom is within the radius, False otherwise.
+    """
     distance = norm(atom.get_coord() - center_atom.get_coord())
     if distance < radius:
         return True
     return False
 
 class AtomSelect(Select):
+    """
+    Select object to use with the PDBIO module.
+
+    Args:
+        selected_atoms (list): A list of atoms to select.
+
+    Methods:
+        accept_atom(atom): Returns True if the given atom is in the list of selected atoms, False otherwise.
+    """
     def __init__(self, selected_atoms):
         self.selected_atoms = selected_atoms
 
@@ -76,6 +106,18 @@ class AtomSelect(Select):
         return atom in self.selected_atoms
 
 def select_atoms_within_radius(alpha_carbons, radius, structure, pdb_filename, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
+    """
+    Selects the atoms within the specified radius of the alpha carbons of the specified chain in the PDB file, and writes the selection to a new PDB file.
+
+    Args:
+        alpha_carbons (list): A list of alpha carbon atoms.
+        radius (float): The radius to use for selecting atoms.
+        structure (Structure): The parsed PDB structure.
+        pdb_filename (str): The path to the PDB file.
+        exclude_same_residue (bool): If True, exclude atoms in the same residue as the alpha carbon (default True).
+        exclude_neighbours (bool): If True, exclude atoms in neighbouring residues of the alpha carbon (default False).
+        exclude_chain (str): If specified, exclude atoms in the specified chain (default None).
+    """
     # Extract the name of the PDB file without the extension
     base_filename = os.path.basename(os.path.splitext(pdb_filename)[0])
 
@@ -132,6 +174,12 @@ def select_atoms_within_radius(alpha_carbons, radius, structure, pdb_filename, e
         counter += 1
 
 def process_pdb_file(pdb_file):
+    """
+    Processes a single PDB file by selecting the atoms within the specified radius of the alpha carbons of the peptide chain, and writing the selections to new PDB files.
+
+    Args:
+        pdb_file (str): The path to the PDB file.
+    """
     # Set radius for new PDB files
     radius = 8.5
     peptide_chain_id = get_peptide_chain_id(pdb_file)
@@ -142,8 +190,6 @@ def process_pdb_file(pdb_file):
 
 
 if __name__ == "__main__":
-    
-    
     # Get directory path from user
     directory_path = input("Enter directory path containing PDB files: ")
     
