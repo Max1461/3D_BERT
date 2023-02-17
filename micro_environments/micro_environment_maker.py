@@ -14,14 +14,6 @@ from tqdm import tqdm
 import time
 
 from multiprocessing import Pool, cpu_count
-# from Bio import PDB
-# from Bio.PDB import PDBParser, PDBIO, Selection, Atom, Residue, Chain, Structure, NeighborSearch
-#from Bio.PDB.Structure import Structure
-#from Bio.PDB.Chain import Chain
-
-#from Bio.PDB.Structure import Structure
-
-
 
 def get_peptide_chain_id(pdb_file):
     """
@@ -45,6 +37,31 @@ def get_peptide_chain_id(pdb_file):
             min_length = chain_length
     return peptide_chain_id
 
+
+def get_chain_residues(pdb_file, chain_id):
+    """
+    Returns a list of alpha carbons of the residues in the specified chain of the PDB file.
+
+    Args:
+        pdb_file (str): The path to the PDB file.
+        chain_id (str): The identifier of the chain to select.
+
+    Returns:
+        A tuple containing the parsed PDB structure and a list of alpha carbon atoms.
+    """
+    # Initialize parser and read PDB file
+    parser = PDBParser()
+    structure = parser.get_structure('example', pdb_file)
+
+    # Get the alpha carbons of the residues in the specified chain
+    chain_residues = []
+    for model in structure:
+        for chain in model:
+            if chain.get_id() == chain_id:
+                for residue in chain:
+                    chain_residues.append(residue)
+
+    return structure, chain_residues
 
 def get_alpha_carbons(pdb_file, chain_id):
     """
@@ -105,6 +122,78 @@ class AtomSelect(Select):
     def accept_atom(self, atom):
         return atom in self.selected_atoms
 
+def select_residues_within_radius(chain_residues, radius, structure, pdb_filename, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
+    """
+    Selects the atoms within the specified radius of the alpha carbons of the specified chain in the PDB file, and writes the selection to a new PDB file.
+
+    Args:
+        alpha_carbons (list): A list of alpha carbon atoms.
+        radius (float): The radius to use for selecting atoms.
+        structure (Structure): The parsed PDB structure.
+        pdb_filename (str): The path to the PDB file.
+        exclude_same_residue (bool): If True, exclude atoms in the same residue as the alpha carbon (default True).
+        exclude_neighbours (bool): If True, exclude atoms in neighbouring residues of the alpha carbon (default False).
+        exclude_chain (str): If specified, exclude atoms in the specified chain (default None).
+    """
+    
+    # Extract the name of the PDB file without the extension
+    base_filename = os.path.basename(os.path.splitext(pdb_filename)[0])
+
+    # Initialize a counter for generating unique file names
+    counter = 1
+
+    # Determine output directory based on exclude options
+    if exclude_same_residue:
+        output_dir=""
+        output_dir = os.path.join(output_dir, "exclude_same_residue")
+    if exclude_neighbours:
+        output_dir=""
+        output_dir = os.path.join(output_dir, "exclude_neighbours")
+    if exclude_chain:
+        output_dir=""
+        output_dir = os.path.join(output_dir, "exclude_peptide_chain")
+
+    # Check if output directory exists and create it if not
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    # Iterate over center residues and select the residues within the radius of each center residue
+    for center_residue in chain_residues:
+        # Determine the start and end residue indices to exclude neighbours
+        if exclude_neighbours:
+            chain_id = center_residue.get_parent().get_id()
+            residues = center_residue.get_parent().get_residues()
+            residue_ids = [residue.get_id()[1] for residue in residues if residue.get_parent().get_id() == chain_id]
+            start_index = max(residue_ids.index(center_residue.get_id()[1]) - 2, 0)
+            end_index = min(start_index + 5, len(residue_ids))
+
+        selected_residues = []
+        for model in structure:
+            for chain in model:
+                if exclude_chain and chain.get_id() == exclude_chain:
+                    continue
+                for residue in chain:
+                    if exclude_same_residue and residue.get_id() == center_residue.get_id():
+                        continue
+                    if exclude_neighbours and residue.get_id()[1] in residue_ids[start_index:end_index] and residue.get_parent().get_id() == chain_id:
+                        continue
+                    # Check if residue has an atom within radius of center residue atoms
+                    if any(is_within_radius(atom, center_atom, radius) for atom in residue.get_list() for center_atom in center_residue.get_list()):
+                            selected_residues.append(residue)
+        
+        # Get atoms from selected residues
+        selected_atoms = []
+        for selected_residue in selected_residues:
+            selected_atoms += selected_residue.get_list()
+        # Write selected atoms to a new PDB file
+        io = PDBIO()
+        io.set_structure(structure)
+        output_filename = os.path.join(output_dir, f"{base_filename}_{counter}_{center_residue.get_resname()}.pdb")
+        io.save(output_filename, select=AtomSelect(selected_atoms))
+
+        # Increment the counter for the next iteration
+        counter += 1
+
 def select_atoms_within_radius(alpha_carbons, radius, structure, pdb_filename, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
     """
     Selects the atoms within the specified radius of the alpha carbons of the specified chain in the PDB file, and writes the selection to a new PDB file.
@@ -138,7 +227,8 @@ def select_atoms_within_radius(alpha_carbons, radius, structure, pdb_filename, e
     # Check if output directory exists and create it if not
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
+        
+    # Iterate over alpha carbons and select the atoms within the radius of each alpha carbon
     for center_atom in alpha_carbons:
         # Determine the start and end residue indices to exclude neighbours
         if exclude_neighbours:
@@ -147,9 +237,7 @@ def select_atoms_within_radius(alpha_carbons, radius, structure, pdb_filename, e
             residue_ids = [residue.get_id()[1] for residue in residues if residue.get_parent().get_id() == chain_id]
             start_index = max(residue_ids.index(center_atom.get_parent().get_id()[1]) - 2, 0)
             end_index = min(start_index + 5, len(residue_ids))
-
-
-        # Iterate over alpha carbons and select the atoms within the radius of each alpha carbon
+        
         selected_atoms = []
         for model in structure:
             for chain in model:
@@ -183,10 +271,16 @@ def process_pdb_file(pdb_file):
     # Set radius for new PDB files
     radius = 8.5
     peptide_chain_id = get_peptide_chain_id(pdb_file)
-    structure, alpha_carbons = get_alpha_carbons(pdb_file, peptide_chain_id)
-    select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file)
-    select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_chain=peptide_chain_id)
-    select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_neighbours=True)
+    
+    structure, alpha_carbons = get_chain_residues(pdb_file, peptide_chain_id)
+    select_residues_within_radius(alpha_carbons, radius, structure, pdb_file)
+    select_residues_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_chain=peptide_chain_id)
+    select_residues_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_neighbours=True)
+    
+    # structure, alpha_carbons = get_alpha_carbons(pdb_file, peptide_chain_id)
+    # select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file)
+    # select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_chain=peptide_chain_id)
+    # select_atoms_within_radius(alpha_carbons, radius, structure, pdb_file, exclude_neighbours=True)
 
 
 if __name__ == "__main__":
@@ -199,7 +293,7 @@ if __name__ == "__main__":
 
     
     # Create a multiprocessing pool with the number of worker processes equal to the number of CPUs
-    num_workers = cpu_count()
+    num_workers = int(0.2 * cpu_count())
     pool = Pool(num_workers)
     
     # Use the pool to process all PDB files in parallel
