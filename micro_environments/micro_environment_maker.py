@@ -40,14 +40,14 @@ def get_peptide_chain_id(pdb_file):
 
 def get_chain_residues(pdb_file, chain_id):
     """
-    Returns a list of alpha carbons of the residues in the specified chain of the PDB file.
+    Returns the parsed PDB structure and a list of residues that make up the specified chain in the PDB file.
 
     Args:
         pdb_file (str): The path to the PDB file.
         chain_id (str): The identifier of the chain to select.
 
     Returns:
-        A tuple containing the parsed PDB structure and a list of alpha carbon atoms.
+        A tuple containing the parsed PDB structure and a list of residues that make up the specified chain.
     """
     # Initialize parser and read PDB file
     parser = PDBParser()
@@ -124,16 +124,16 @@ class AtomSelect(Select):
 
 def select_residues_within_radius(chain_residues, radius, structure, pdb_filename, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
     """
-    Selects the atoms within the specified radius of the alpha carbons of the specified chain in the PDB file, and writes the selection to a new PDB file.
+    Selects residues within the specified radius of any atom in a list of central residues in a PDB structure, and writes the selection to a new PDB file.
 
     Args:
-        alpha_carbons (list): A list of alpha carbon atoms.
-        radius (float): The radius to use for selecting atoms.
+        chain_residues (list): A list of central residues for selecting nearby residues.
+        radius (float): The radius to use for selecting residues.
         structure (Structure): The parsed PDB structure.
         pdb_filename (str): The path to the PDB file.
-        exclude_same_residue (bool): If True, exclude atoms in the same residue as the alpha carbon (default True).
-        exclude_neighbours (bool): If True, exclude atoms in neighbouring residues of the alpha carbon (default False).
-        exclude_chain (str): If specified, exclude atoms in the specified chain (default None).
+        exclude_same_residue (bool): If True, exclude residues containing atoms in the same residue as the central residues (default True).
+        exclude_neighbours (bool): If True, exclude residues containing atoms in neighbouring residues of the central residues (default False).
+        exclude_chain (str): If specified, exclude residues containing atoms in the specified chain (default None).
     """
     
     # Extract the name of the PDB file without the extension
