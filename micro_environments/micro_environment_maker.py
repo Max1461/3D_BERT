@@ -14,13 +14,6 @@ from tqdm import tqdm
 import time
 
 from multiprocessing import Pool, cpu_count
-# from Bio import PDB
-# from Bio.PDB import PDBParser, PDBIO, Selection, Atom, Residue, Chain, Structure, NeighborSearch
-#from Bio.PDB.Structure import Structure
-#from Bio.PDB.Chain import Chain
-
-#from Bio.PDB.Structure import Structure
-
 
 
 def get_peptide_chain_id(pdb_file):
