@@ -9,6 +9,51 @@ import time
 from openmm.app import PDBFile
 from pdbfixer import PDBFixer
 from tqdm import tqdm
+import re
+from Bio.PDB import PDBParser
+from Bio.PDB.MMCIFParser import MMCIFParser
+
+def parse_pdb_information(pdb_file):
+    information_lines = []
+    with open(pdb_file, 'r') as f:
+        for line in f:
+            if line.startswith('ATOM'):
+                break
+            else:
+                information_lines.append(line.strip())
+    return information_lines
+
+def chain_information(information_lines):
+    information_string = '\n'.join(information_lines)
+    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)", information_string)
+    molecule_lines = re.findall(r"COMPND\s+\d+\s+MOLECULE:\s+(.+)", information_string)
+    
+    parsed_chains = []
+    for chain, molecule in zip(chain_lines, molecule_lines):
+        chains = []
+        if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "Beta"]):
+            # extract the chains from the chain line
+            for chain_list in chain.split(", "):
+                for chain_id in chain_list.strip().split():
+                    if not chains or ord(chain_id) == ord(chains[-1]) + 1:
+                        chains.append(chain_id)
+                    else:
+                        break  # ignore this chain list
+            separator = ', '
+            wanted_chains = separator.join(chains)
+            line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
+            new_line = line.replace(chain, wanted_chains)
+            information_string = information_string.replace(line, new_line)
+        else:
+            line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
+            # remove the line from the information string
+            information_string = information_string.replace(line, '')
+            
+        # append the parsed chains to the list
+        parsed_chains.append(','.join(chains))
+
+    # return the parsed chains list and the updated information string
+    return parsed_chains, information_string
 
 def pdb_cleaner(pdb_file):
     # Create a PDBFixer object
