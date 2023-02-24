@@ -4,26 +4,47 @@ Created on Tue Feb 14 12:10:01 2023
 
 @author: Max
 """
+import argparse
 import os
 import time
-from openmm.app import PDBFile
 from pdbfixer import PDBFixer
 from tqdm import tqdm
 import re
-from Bio.PDB import PDBParser
-from Bio.PDB.MMCIFParser import MMCIFParser
+from openmm.app import PDBFile
 
 def parse_pdb_information(pdb_file):
+    """
+    Parses the PDB file and extracts the header information from it.
+
+    Args:
+        pdb_file (str): The path to the PDB file to be parsed.
+
+    Returns:
+        information_lines (list): A list of strings containing the header information extracted from the PDB file.
+    """
     information_lines = []
     with open(pdb_file, 'r') as f:
         for line in f:
             if line.startswith('ATOM'):
                 break
             else:
-                information_lines.append(line.strip())
+                information_lines.append(line)
     return information_lines
 
+
 def chain_information(information_lines):
+    """
+    Extracts the chain information from the header of a PDB file.
+
+    Args:
+        information_lines (list): A list of strings containing the header information of the PDB file.
+
+    Returns:
+        parsed_chains (list): A list of characters representing the chain IDs present in the PDB file.
+        information_string (str): A string containing the updated header information of the PDB file after parsing the chain information.
+    """
+    
+    information_lines = [line.strip() for line in information_lines]
     information_string = '\n'.join(information_lines)
     chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)", information_string)
     molecule_lines = re.findall(r"COMPND\s+\d+\s+MOLECULE:\s+(.+)", information_string)
@@ -34,33 +55,50 @@ def chain_information(information_lines):
         if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "Beta"]):
             # extract the chains from the chain line
             for chain_list in chain.split(", "):
+                # remove any possible white spaces
                 for chain_id in chain_list.strip().split():
                     if not chains or ord(chain_id) == ord(chains[-1]) + 1:
                         chains.append(chain_id)
                     else:
                         break  # ignore this chain list
-            separator = ', '
-            wanted_chains = separator.join(chains)
             line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
-            new_line = line.replace(chain, wanted_chains)
-            information_string = information_string.replace(line, new_line)
+            separator = ', '
+            if chains:
+                new_line = line.replace(chain, separator.join(chains))
+                information_string = information_string.replace(line, new_line)
+                parsed_chains.extend(chains)
+            else:
+                information_string = information_string.replace(line, '')
         else:
             line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
-            # remove the line from the information string
             information_string = information_string.replace(line, '')
-            
-        # append the parsed chains to the list
-        parsed_chains.append(','.join(chains))
-
     # return the parsed chains list and the updated information string
     return parsed_chains, information_string
 
-def pdb_cleaner(pdb_file):
+
+def pdb_cleaner(pdb_file, parsed_chains, information_lines=None):
+    """
+    Cleans the PDB file by removing heterogens, finding missing residues and atoms, and adding missing heavy atoms using PDBFixer.
+
+    Args:
+        pdb_file (str): The path to the PDB file to be cleaned.
+        parsed_chains (list): A list of characters representing the chain IDs present in the PDB file.
+        information_lines (list): A list of strings representing the header information.
+
+    Returns:
+        
+    """
     # Create a PDBFixer object
     fixer = PDBFixer(pdb_file)
+
+    # Remove heterogens
     fixer.removeHeterogens(True)
+
+    # Find missing residues and atoms
     fixer.findMissingResidues()
     fixer.findMissingAtoms()
+
+    # Add missing atoms
     try:
         fixer.addMissingAtoms()
     except KeyError:
@@ -70,12 +108,34 @@ def pdb_cleaner(pdb_file):
     fixer.findNonstandardResidues()
     fixer.replaceNonstandardResidues()
 
+    # Remove unwanted chains
+    fixer.removeChains([i for i, chain in enumerate(fixer.topology.chains()) if chain.id not in parsed_chains])
+
     # Write the modified PDB file to the output file
-    PDBFile.writeFile(fixer.topology, fixer.positions, open(pdb_file, 'w'))
+    temp_pdb_file = "temp.pdb"
+    PDBFile.writeFile(fixer.topology, fixer.positions, open(temp_pdb_file, 'w'))
+
+    # Combine the header information and the temporary PDB file
+    with open(temp_pdb_file, 'r') as f:
+        temp_pdb_lines = f.readlines()
+    with open(pdb_file, 'w') as f:
+        f.writelines(information_lines + temp_pdb_lines)
+
+    # Delete the temporary file
+    os.remove(temp_pdb_file)
 
 if __name__ == "__main__":
     # Get directory path from user
-    directory_path = input("Enter directory path containing PDB files: ")
+    # Parse the input arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--directory_path", help="The path containing PDB files.")
+    args = parser.parse_args()
+    
+    # If the user did not provide a directory path, ask for it
+    if not args.directory_path:
+        args.directory_path = input("Please provide the path containing PDB files: ")
+        
+    directory_path = args.directory_path
 
     # Find all PDB files in directory
     pdb_files = [os.path.join(directory_path, f) for f in os.listdir(directory_path) if f.endswith('.pdb')]
@@ -84,7 +144,9 @@ if __name__ == "__main__":
     
     start_time = time.time()
     for pdb_file in pdb_files:
-        pdb_cleaner(pdb_file)
+        information_lines = parse_pdb_information(pdb_file)
+        parsed_chains, information_string = chain_information(information_lines)
+        pdb_cleaner(pdb_file, parsed_chains, information_lines)
         progress_bar.update(1)
     end_time = time.time()
     progress_bar.close()
