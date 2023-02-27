@@ -38,7 +38,7 @@ def extract_information_from_pdb(pdb_file):
         lines = pdb_data.splitlines()
 
     # Use a regular expression to find the lines that contain the chain IDs
-    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)", pdb_data)
+    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)(?:;|\n;)", pdb_data)
     # Extract the chain IDs from the lines and removes the spaces and ','
     chains = [chain for sublist in chain_lines for chain in sublist.split(", ")]
 

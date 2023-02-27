@@ -35,7 +35,7 @@ def main():
     subprocess.run(["python", "pdb_downloader.py", "{}".format(directory_path)])
 
     # Call the pdb_cleaner.py script to clean the downloaded PDB files
-    subprocess.run(["python", "pdb_cleaner.py", "{}".format(directory_path)])
+    subprocess.run(["python", "pdb_cleaner.py", "--directory_path", "{}".format(directory_path)])
 
 if __name__ == "__main__":
     main()

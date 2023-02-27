@@ -46,7 +46,7 @@ def download_pdb_files(pdb_ids, download_path):
         file_path = os.path.join(download_path, pdb_file)
 
         # Check if the file already exists in the download path
-        if not os.path.exists(file_path) or os.path.exists(file_path.rstrip('.gz')):
+        if not os.path.exists(file_path) and not os.path.exists(file_path.rstrip('.gz')):
             # Download the file if it does not exist
             # urllib.request.urlretrieve(pdb_url + pdb_file, file_path)
             urllib.request.urlretrieve(pdb_url, file_path)
