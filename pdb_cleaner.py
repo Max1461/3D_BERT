@@ -47,26 +47,30 @@ def chain_information(information_lines, pdb_file):
     
     information_lines = [line.strip() for line in information_lines]
     information_string = '\n'.join(information_lines)
-    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)(?:;|\n;)", information_string)
+    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([a-zA-Z,\s]+);?\n", information_string)
     molecule_lines = re.findall(r"COMPND\s+\d+\s+MOLECULE:\s+(.+)", information_string)
     pdb_ID = Path(pdb_file).resolve().stem.lower()
+    peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(pdb_ID), information_string, re.MULTILINE | re.DOTALL)
 
+    separator = ', '
     parsed_chains = []
+    last_chain_id = None
+
     for chain, molecule in zip(chain_lines, molecule_lines):
-        chain = chain
+        chain_IDs = chain.split(", ")
         chains = []
-        if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "Beta"]):
-            # extract the chains from the chain line
+        
+        if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "beta", "hla"]) or any(peptide_chain in chain for peptide_chain in peptide_chains):
             try:
-                for chain_list in chain.split(", "):
-                    # remove any possible white spaces
-                    for chain_id in chain_list.strip().split():
-                        if not chains or ord(chain_id) == ord(chains[-1]) + 1:
-                            chains.append(chain_id)
-                        else:
-                            break  # ignore this chain list
+                for chain_id in chain_IDs:
+                    # Remove any possible white spaces
+                    chain_id = chain_id.strip()
+                    if not chains or ord(chain_id) == ord(last_chain_id) + 1:
+                        chains.append(chain_id)
+                        last_chain_id = chain_id
+                    else:
+                        break
                 line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
-                separator = ', '
                 if chains:
                     new_line = line.replace(chain, separator.join(chains))
                     information_string = information_string.replace(line, new_line)
@@ -79,79 +83,20 @@ def chain_information(information_lines, pdb_file):
         else:
             line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
             information_string = information_string.replace(line, 'COMPND')
-    # return the parsed chains list and the updated information string
 
+    missing_chains_file = "pdb_files_with_missing_chains.txt"
     if len(parsed_chains) < 3:
-        peptide_chains_list = []
-        peptide_chains = re.findall(r"IMGT\sreceptor\sdescription.+?Peptide.+?Chain\sID.+?{}_(\w)".format(pdb_ID), information_string, re.MULTILINE | re.DOTALL)
-        for peptide_chain in peptide_chains:
-            if not peptide_chains_list or ord(peptide_chain) == ord(peptide_chains_list[-1]) + 1:
-                peptide_chains_list.append(peptide_chain)
+        # Check if the line is already present in the file
+        line_to_write = "{} did not contain the minimum expected amount of parsed chains\n".format(pdb_file)
+        with open(missing_chains_file, "a+") as f:
+            f.seek(0)
+            if line_to_write in f.read():
+                print(f"{line_to_write.strip()} already present in {missing_chains_file}. Skipping...")
             else:
-                break  # ignore this chain list
-
-        separator = ', '
-        petides_chains_string = separator.join(peptide_chains)
-        print(petides_chains_string)
-        line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(petides_chains_string), information_string).group(0)
-        if chains:
-            new_line = line.replace(petides_chains_string, separator.join(peptide_chains_list))
-            information_string = information_string.replace(line, new_line)
-            parsed_chains.extend(peptide_chains_list)
-
-    if len(parsed_chains) < 3:
-        with open("missing_chains.txt", "a") as f:
-            f.write("{} did not contain the minimum expected amount of parsed chains\n".format(pdb_file))
+                f.write(line_to_write)
+                print(f"{line_to_write.strip()} written to {missing_chains_file}.")
 
     return parsed_chains, information_string
-
-# def chain_information(information_lines, pdb_file):
-    """
-    Extracts the chain information from the header of a PDB file.
-
-    Args:
-        information_lines (list): A list of strings containing the header information of the PDB file.
-
-    Returns:
-        parsed_chains (list): A list of characters representing the chain IDs present in the PDB file.
-        information_string (str): A string containing the updated header information of the PDB file after parsing the chain information.
-    """
-    
-    information_lines = [line.strip() for line in information_lines]
-    information_string = '\n'.join(information_lines)
-    chain_lines = re.findall(r"COMPND\s+\d+\s+CHAIN:\s+([A-Z,\s]+)(?:;|\n;)", information_string)
-    molecule_lines = re.findall(r"COMPND\s+\d+\s+MOLECULE:\s+(.+)", information_string)
-    
-    parsed_chains = []
-    for chain, molecule in zip(chain_lines, molecule_lines):
-        chains = []
-        if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "Beta"]):
-            # extract the chains from the chain line
-            for chain_list in chain.split(", "):
-                # remove any possible white spaces
-                for chain_id in chain_list.strip().split():
-                    if not chains or ord(chain_id) == ord(chains[-1]) + 1:
-                        chains.append(chain_id)
-                    else:
-                        break  # ignore this chain list
-            line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
-            separator = ', '
-            if chains:
-                new_line = line.replace(chain, separator.join(chains))
-                information_string = information_string.replace(line, new_line)
-                parsed_chains.extend(chains)
-            else:
-                information_string = information_string.replace(line, 'COMPND')
-        else:
-            line = re.search(r"COMPND\s+\d+\s+CHAIN:\s+{}".format(chain), information_string).group(0)
-            information_string = information_string.replace(line, 'COMPND')
-    # return the parsed chains list and the updated information string
-
-    if len(parsed_chains) < 3:
-        print("{} did not contain the minimum expected amount of parsed chains".format(pdb_file))
-
-    return parsed_chains, information_string
-
 
 def pdb_cleaner(pdb_file, parsed_chains, information_lines=None):
     """
@@ -194,12 +139,31 @@ def pdb_cleaner(pdb_file, parsed_chains, information_lines=None):
 
     # Combine the header information and the temporary PDB file
     with open(temp_pdb_file, 'r') as f:
-        temp_pdb_lines = f.readlines()
+        temp_pdb_lines = '\n'.join(f.readlines())
     with open(pdb_file, 'w') as f:
-        f.writelines(information_lines + temp_pdb_lines)
+        f.writelines(information_string + "\n" +  temp_pdb_lines)
 
     # Delete the temporary file
     os.remove(temp_pdb_file)
+
+def is_pdb_cleaned(pdb_file):
+    """
+    Check if the PDB file has already been cleaned.
+
+    Parameters:
+        pdb_file (str): The path to the PDB file to check.
+
+    Returns:
+        bool: True if the file has been cleaned (contains a line starting with "REMARK" and containing
+              "CREATED WITH OPENMM"), False otherwise.
+    """
+    with open(pdb_file, 'r') as f:
+        for line in f:
+            if line.startswith('REMARK') and 'CREATED WITH OPENMM' in line:
+                return True
+    return False
+
+
 
 if __name__ == "__main__":
     # Get directory path from user
@@ -221,9 +185,14 @@ if __name__ == "__main__":
     
     start_time = time.time()
     for pdb_file in pdb_files:
+        if is_pdb_cleaned(pdb_file):
+            print(f"{pdb_file} has already been cleaned. Skipping to the next file...")
+            progress_bar.update(1)
+            continue
+            
         information_lines = parse_pdb_information(pdb_file)
         parsed_chains, information_string = chain_information(information_lines, pdb_file)
-        pdb_cleaner(pdb_file, parsed_chains, information_lines)
+        pdb_cleaner(pdb_file, parsed_chains, information_string)
         progress_bar.update(1)
     end_time = time.time()
     progress_bar.close()

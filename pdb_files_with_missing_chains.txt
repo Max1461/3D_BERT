@@ -1,0 +1,1 @@
+IMGT_hla_a_0201_pdbs/5FA3.pdb did not contain the minimum expected amount of parsed chains
