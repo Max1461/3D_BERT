@@ -60,7 +60,7 @@ def chain_information(information_lines, pdb_file):
         chain_IDs = chain.split(", ")
         chains = []
         
-        if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "beta", "hla"]) or any(peptide_chain in chain for peptide_chain in peptide_chains):
+        if any(substring.lower() in molecule.lower() for substring in ["peptide", "epitope", "class I", "globulin", "hla"]) or any(peptide_chain in chain for peptide_chain in peptide_chains):
             try:
                 for chain_id in chain_IDs:
                     # Remove any possible white spaces
