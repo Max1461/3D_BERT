@@ -1,8 +1,10 @@
 import argparse
 import os
 from deeprankcore.query import QueryCollection, ProteinProteinInterfaceAtomicQuery
+from deeprankcore.query import Query
 from pathlib import Path
 import torch
+import importlib
 
 def graph_generation(pdb_files):
 
@@ -47,7 +49,9 @@ def graph_generation(pdb_files):
 
     output_directory = "/test/test"
     # Generate graphs and save them in hdf5 files
-    output_paths = queries.process(output_directory)
+    feature_names = ['components', 'contact', 'exposure', 'surfacearea']
+    feature_modules = [importlib.import_module('deeprankcore.features.' + name) for name in feature_names]
+    output_paths = queries.process(feature_modules = feature_modules)
 
 def get_predicted_aa(predicted_tensor, residue_encoding):
     for aa, encoding in residue_encoding.items():
