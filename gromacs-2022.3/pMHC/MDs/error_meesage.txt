@@ -1,0 +1,132 @@
+Atom contact_atoms_1AKJ_1_ILE A 7 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 2 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 2 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 63 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 63 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 67 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HD3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HE3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 4 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 4 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 4 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HD3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 159 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 159 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 160 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HE3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 159 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 4 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 2 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 63 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 63 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 67 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 4 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 2 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 7 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HG3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 159 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HD3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HD3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 160 H is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 66 HE3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 3 HE3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE C 4 HB3 is unknown to the forcefield; charge is set to 0.0
+Atom contact_atoms_1AKJ_1_ILE A 159 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 67 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 7 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 160 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 67 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 7 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 160 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 67 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 7 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 160 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 63 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 67 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 2 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 7 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HG3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 159 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HD3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 160 H is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE A 66 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 3 HE3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)
+Atom contact_atoms_1AKJ_1_ILE C 4 HB3 is unknown to the forcefield; vanderwaals_parameters set to (0.0, 0.0, 0.0, 0.0)

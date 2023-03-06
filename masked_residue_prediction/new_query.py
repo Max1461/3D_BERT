@@ -22,7 +22,6 @@ from deeprankcore.molstruct.atom import Atom
 from deeprankcore.molstruct.structure import PDBStructure
 from deeprankcore.utils.buildgraph import (
     get_contact_atoms,
-    get_all_atoms,
     get_surrounding_residues,
     get_structure,
     add_hydrogens,
