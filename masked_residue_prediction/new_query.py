@@ -22,39 +22,7 @@ from deeprankcore.molstruct.atom import Atom
 from deeprankcore.molstruct.structure import PDBStructure
 from deeprankcore.utils.buildgraph import (
     get_contact_atoms,
-    get_surrounding_residues,
-    get_structure,
-    add_hydrogens,
-)
-from deeprankcore.utils.parsing.pssm import parse_pssm
-from deeprankcore.utils.graph import build_residue_graph, build_atomic_graph
-from deeprankcore.molstruct.variant import SingleResidueVariant
-import deeprankcore.features
-
-import logging
-import os
-from time import time
-from typing import Dict, List, Optional, Iterator, Union
-import tempfile
-import pdb2sql
-import pickle
-from glob import glob
-from types import ModuleType
-from functools import partial
-from multiprocessing import Pool
-import importlib
-from os.path import basename
-import h5py
-import pkgutil
-import numpy as np
-from deeprankcore.utils.graph import Graph
-from deeprankcore.utils.grid import GridSettings, MapMethod, Augmentation
-from deeprankcore.molstruct.aminoacid import AminoAcid
-from deeprankcore.molstruct.residue import get_residue_center
-from deeprankcore.molstruct.atom import Atom
-from deeprankcore.molstruct.structure import PDBStructure
-from deeprankcore.utils.buildgraph import (
-    get_contact_atoms,
+    get_all_atoms,
     get_surrounding_residues,
     get_structure,
     add_hydrogens,
@@ -612,6 +580,31 @@ def _load_ppi_atoms(pdb_path: str,
 
     return contact_atoms
 
+def _load_all_atoms(pdb_path: str,
+                    include_hydrogens: bool) -> List[Atom]:
+
+    # get the contact atoms
+    if include_hydrogens:
+
+        pdb_name = os.path.basename(pdb_path)
+        hydrogen_pdb_file, hydrogen_pdb_path = tempfile.mkstemp(
+            prefix="hydrogenated-", suffix=pdb_name
+        )
+        os.close(hydrogen_pdb_file)
+
+        add_hydrogens(pdb_path, hydrogen_pdb_path)
+
+        try:
+            all_atoms = get_all_atoms(hydrogen_pdb_path)
+        finally:
+            os.remove(hydrogen_pdb_path)
+    else:
+        all_atoms = get_all_atoms(pdb_path)
+
+    if len(all_atoms) == 0:
+        raise ValueError("no contact atoms found")
+
+    return all_atoms
 
 def _load_ppi_pssms(pssm_paths: Union[Dict[str, str], None],
                     chain_id1: str, chain_id2: str,
@@ -720,6 +713,72 @@ class ProteinProteinInterfaceAtomicQuery(Query):
         graph.center = np.mean([atom.position for atom in contact_atoms], axis=0)
         return graph
 
+class ProteinPeptideAtomicQuery(Query):
+
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        pdb_path: str,
+        targets: Optional[Dict[str, float]] = None,
+        distance_cutoff: Optional[float] = 5.5
+    ):
+        """
+        A query that builds atom-based graphs, using the residues at a protein-protein interface.
+
+        Args:
+            pdb_path (str): The path to the .PDB file.
+            distance_cutoff (Optional[float], optional): Max distance in Ångström between two interacting atoms of the two proteins.
+                Defaults to 5.5.
+            targets (Optional[Dict(str,float)], optional): Named target values associated with this query. Defaults to None.
+        """
+
+        model_id = os.path.splitext(os.path.basename(pdb_path))[0]
+
+        Query.__init__(self, model_id, targets)
+
+        self._pdb_path = pdb_path
+        self._distance_cutoff = distance_cutoff
+
+    def get_query_id(self) -> str:
+        "Returns the string representing the complete query ID."
+        return f"atom-prot_pep-{self.model_id}"
+
+    def __eq__(self, other) -> bool:
+        return (
+            isinstance(self, type(other))
+            and self.model_id == other.model_id
+        )
+
+    def __hash__(self) -> hash:
+        return hash((self.model_id))
+
+    def build(self, feature_modules: List[ModuleType], include_hydrogens: bool = True) -> Graph:
+        """Builds the graph from the .PDB structure.
+
+        Args:
+            feature_modules (List[ModuleType]): Each must implement the :py:func:`add_features` function.
+            include_hydrogens (bool, optional): Whether to include hydrogens in the :class:`Graph`. Defaults to False.
+
+        Returns:
+            :class:`Graph`: The resulting :class:`Graph` object with all the features and targets. 
+        """
+
+        all_atoms = _load_all_atoms(self._pdb_path,
+                                        include_hydrogens)
+
+        # build the graph
+        graph = build_atomic_graph(
+            all_atoms, self.get_query_id(), self._distance_cutoff
+        )
+
+        # add data to the graph
+        self._set_graph_targets(graph)
+
+        # add the features
+        for feature_module in feature_modules:
+            feature_module.add_features(self._pdb_path, graph)
+
+        graph.center = np.mean([atom.position for atom in all_atoms], axis=0)
+        return graph
 
 class ProteinProteinInterfaceResidueQuery(Query):
 

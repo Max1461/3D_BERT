@@ -6,6 +6,137 @@ from pathlib import Path
 import torch
 import importlib
 
+def get_all_atoms( # pylint: disable=too-many-locals
+    pdb_path: str,
+) -> List[Atom]:
+    """Gets the contact atoms from pdb2sql and wraps them in python objects."""
+
+    pdb = pdb2sql(pdb_path)
+    pdb_name = os.path.splitext(os.path.basename(pdb_path))[0]
+
+    rows = pdb.get("x,y,z,name,element,altLoc,occ,chainID,resSeq,resName,iCode")
+
+    structure = PDBStructure(f"atoms_{pdb_name}")
+
+    for row in rows:
+        (
+            x,
+            y,
+            z,
+            atom_name,
+            element_name,
+            altloc,
+            occupancy,
+            chain_id,
+            residue_number,
+            residue_name,
+            insertion_code
+        ) = row
+
+        _add_atom_data_to_structure(structure,
+                                    x, y, z,
+                                    atom_name,
+                                    altloc, occupancy,
+                                    element_name,
+                                    chain_id,
+                                    residue_number,
+                                    residue_name,
+                                    insertion_code)
+    return structure.get_atoms()
+
+def _load_all_atoms(pdb_path: str,
+                    include_hydrogens: bool) -> List[Atom]:
+
+    # get the contact atoms
+    if include_hydrogens:
+
+        pdb_name = os.path.basename(pdb_path)
+        hydrogen_pdb_file, hydrogen_pdb_path = tempfile.mkstemp(
+            prefix="hydrogenated-", suffix=pdb_name
+        )
+        os.close(hydrogen_pdb_file)
+
+        add_hydrogens(pdb_path, hydrogen_pdb_path)
+
+        try:
+            all_atoms = get_all_atoms(hydrogen_pdb_path)
+        finally:
+            os.remove(hydrogen_pdb_path)
+    else:
+        all_atoms = get_all_atoms(pdb_path)
+
+    if len(all_atoms) == 0:
+        raise ValueError("no contact atoms found")
+
+    return all_atoms
+
+class ProteinPeptideAtomicQuery(Query):
+
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        pdb_path: str,
+        targets: Optional[Dict[str, float]] = None,
+        distance_cutoff: Optional[float] = 20
+    ):
+        """
+        A query that builds atom-based graphs, using the residues at a protein-protein interface.
+
+        Args:
+            pdb_path (str): The path to the .PDB file.
+            distance_cutoff (Optional[float], optional): Max distance in Ångström between two interacting atoms of the two proteins.
+                Defaults to 5.5.
+            targets (Optional[Dict(str,float)], optional): Named target values associated with this query. Defaults to None.
+        """
+
+        model_id = os.path.splitext(os.path.basename(pdb_path))[0]
+
+        Query.__init__(self, model_id, targets)
+
+        self._pdb_path = pdb_path
+        self._distance_cutoff = distance_cutoff
+
+    def get_query_id(self) -> str:
+        "Returns the string representing the complete query ID."
+        return f"atom-prot_pep-{self.model_id}"
+
+    def __eq__(self, other) -> bool:
+        return (
+            isinstance(self, type(other))
+            and self.model_id == other.model_id
+        )
+
+    def __hash__(self) -> hash:
+        return hash((self.model_id))
+
+    def build(self, feature_modules: List[ModuleType], include_hydrogens: bool = False) -> Graph:
+        """Builds the graph from the .PDB structure.
+
+        Args:
+            feature_modules (List[ModuleType]): Each must implement the :py:func:`add_features` function.
+            include_hydrogens (bool, optional): Whether to include hydrogens in the :class:`Graph`. Defaults to False.
+
+        Returns:
+            :class:`Graph`: The resulting :class:`Graph` object with all the features and targets. 
+        """
+
+        all_atoms = _load_all_atoms(self._pdb_path,
+                                        include_hydrogens)
+
+        # build the graph
+        graph = build_atomic_graph(
+            all_atoms, self.get_query_id(), self._distance_cutoff
+        )
+
+        # add data to the graph
+        self._set_graph_targets(graph)
+
+        # add the features
+        for feature_module in feature_modules:
+            feature_module.add_features(self._pdb_path, graph)
+
+        graph.center = np.mean([atom.position for atom in all_atoms], axis=0)
+        return graph
+
 def graph_generation(pdb_files):
 
     residue_encoding = {
@@ -42,6 +173,13 @@ def graph_generation(pdb_files):
         pdb_path = pdb_file,
         chain_id1 = "A",
         chain_id2 = "C",
+        targets = {
+            "residue": residue_encoding[masked_residue]
+        }
+        ))
+
+        queries.add(ProteinPeptideAtomicQuery(
+        pdb_path = pdb_file,
         targets = {
             "residue": residue_encoding[masked_residue]
         }

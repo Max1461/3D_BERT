@@ -12,6 +12,7 @@ from tqdm import tqdm
 import re
 from openmm.app import PDBFile
 from pathlib import Path
+import subprocess
 
 def parse_pdb_information(pdb_file):
     """
@@ -139,12 +140,17 @@ def pdb_cleaner(pdb_file, parsed_chains, information_lines=None):
 
     # Combine the header information and the temporary PDB file
     with open(temp_pdb_file, 'r') as f:
-        temp_pdb_lines = '\n'.join(f.readlines())
+        temp_pdb_lines = ''.join(f.readlines())
     with open(pdb_file, 'w') as f:
         f.writelines(information_string + "\n" +  temp_pdb_lines)
 
     # Delete the temporary file
     os.remove(temp_pdb_file)
+
+    # Add hydrogens using reduce tool
+    command = "reduce -BUILD {} > {}".format(pdb_file, pdb_file.strip(".pdb")+ ".reduce_flip")
+    subprocess.run(command, shell=True)
+    os.rename(pdb_file.strip(".pdb")+ ".reduce_flip", pdb_file)
 
 def is_pdb_cleaned(pdb_file):
     """
