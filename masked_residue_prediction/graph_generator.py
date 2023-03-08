@@ -1,6 +1,6 @@
 import argparse
 import os
-from deeprankcore.query import QueryCollection, ProteinProteinInterfaceAtomicQuery
+from deeprankcore.query import QueryCollection, ProteinPeptideAtomicQuery, ProteinProteinInterfaceAtomicQuery
 from deeprankcore.query import Query
 from pathlib import Path
 import torch
