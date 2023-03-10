@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Thu Mar  9 10:48:00 2023
+
+@author: Max
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Tue Feb 14 09:05:20 2023
 
 @author: Max
@@ -14,6 +21,9 @@ from tqdm import tqdm
 import time
 
 from multiprocessing import Pool, cpu_count
+
+from Bio.PDB.Polypeptide import is_aa
+from Bio.PDB.NeighborSearch import NeighborSearch
 
 def get_peptide_chain_id(pdb_file):
     """
@@ -122,6 +132,52 @@ class AtomSelect(Select):
     def accept_atom(self, atom):
         return atom in self.selected_atoms
 
+
+def remove_side_chain(residue, structure):
+    """Remove the side chain atoms from an amino acid residue in a protein structure.
+
+    Args:
+        residue (Bio.PDB.Residue): A residue object from the Biopython PDB module.
+        structure (Bio.PDB.Structure): A protein structure object from the Biopython PDB module.
+
+    Returns:
+        Bio.PDB.Residue: The modified residue object with only the main chain atoms.
+
+    Raises:
+        TypeError: If the residue is not an amino acid residue.
+
+    """
+    # skip if the residue is not an amino acid and return the original residue
+    if not is_aa(residue):
+        raise TypeError("The residue is not an amino acid.")
+    
+    # set of main chain atom names
+    main_chain_atoms = {"N", "CA", "C", "O"}
+    
+    main_chain_coordinates = [residue[a.get_name()].get_coord() for a in residue if a.get_name() in main_chain_atoms]
+
+    # Create a NeighborSearch object with all the atoms in the structure
+    ns = NeighborSearch(list(structure.get_atoms()))
+    
+    # Find all the atoms that are within a distance of 1.5 angstroms from each main chain atom
+    for main_chain_coordinate in main_chain_coordinates:
+        neighbors = ns.search(main_chain_coordinate, 1.5)
+        hydrogen_atoms = [a for a in neighbors if a.element == "H"]
+        # Add the names of the hydrogen atoms to the main_chain_atoms set
+        for a in hydrogen_atoms:
+            main_chain_atoms.add(a.get_name())
+    
+    # iterate over all child atoms of the residue
+    for atom in residue.child_list.copy():
+        # detach the atom if it is not part of the main chain
+        if atom.name not in main_chain_atoms:
+            residue.detach_child(atom.id)
+    
+    # return the modified residue
+    return residue
+
+
+
 def select_residues_within_radius(chain_residues, radius, structure, pdb_filename, exclude_same_residue=True, exclude_neighbours=False, exclude_chain=None):
     """
     Selects residues within the specified radius of any atom in a list of central residues in a PDB structure, and writes the selection to a new PDB file.
@@ -131,9 +187,9 @@ def select_residues_within_radius(chain_residues, radius, structure, pdb_filenam
         radius (float): The radius to use for selecting residues.
         structure (Structure): The parsed PDB structure.
         pdb_filename (str): The path to the PDB file.
-        exclude_same_residue (bool): If True, exclude residues containing atoms in the same residue as the central residues (default True).
-        exclude_neighbours (bool): If True, exclude residues containing atoms in neighbouring residues of the central residues (default False).
-        exclude_chain (str): If specified, exclude residues containing atoms in the specified chain (default None).
+        exclude_same_residue (bool): If True, exclude side chain of residues containing atoms in the same residue as the central residues (default True).
+        exclude_neighbours (bool): If True, exclude side chain of residues containing atoms in neighbouring residues of the central residues (default False).
+        exclude_chain (str): If specified, exclude side chain of residues containing atoms in the specified chain (default None).
     """
     
     # Extract the name of the PDB file without the extension
@@ -170,15 +226,19 @@ def select_residues_within_radius(chain_residues, radius, structure, pdb_filenam
         selected_residues = []
         for model in structure:
             for chain in model:
-                if exclude_chain and chain.get_id() == exclude_chain:
-                    continue
                 for residue in chain:
-                    if exclude_same_residue and residue.get_id() == center_residue.get_id():
-                        continue
-                    if exclude_neighbours and residue.get_id()[1] in residue_ids[start_index:end_index] and residue.get_parent().get_id() == chain_id:
-                        continue
                     # Check if residue has an atom within radius of center residue atoms
                     if any(is_within_radius(atom, center_atom, radius) for atom in residue.get_list() for center_atom in center_residue.get_list()):
+                        # Check for exclude chain
+                        if exclude_chain and chain.get_id() == exclude_chain:
+                            selected_residues.append(remove_side_chain(residue, structure))
+                        # Check for exclude neighbours
+                        elif exclude_neighbours and residue.get_id()[1] in residue_ids[start_index:end_index] and residue.get_parent().get_id() == chain_id:
+                            selected_residues.append(remove_side_chain(residue, structure))
+                        # Check for exclude same residue
+                        elif exclude_same_residue and residue.get_id() == center_residue.get_id():
+                            selected_residues.append(remove_side_chain(residue, structure))
+                        else:
                             selected_residues.append(residue)
         
         # Get atoms from selected residues

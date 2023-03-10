@@ -28,6 +28,7 @@ def main():
     
     # Get the list of pdb files
     pdb_files = get_pdb_file_list(path)
+    print(pdb_files)
     
     # If pdb_files is empty, prompt the user for input
     if not pdb_files:
@@ -63,7 +64,8 @@ def get_pdb_files(directory):
     files = os.listdir(directory)
 
     # Filter out any files that do not have the .pdb extension
-    pdb_files = [f for f in files if f.endswith(".pdb")]
+    pdb_files = [os.path.join(directory, f) for f in files if f.endswith(".pdb")]
+
 
     return pdb_files
 
