@@ -99,14 +99,15 @@ def chain_information(information_lines, pdb_file):
 
     return parsed_chains, information_string
 
-def pdb_cleaner(pdb_file, parsed_chains, information_lines=None):
+def pdb_cleaner(pdb_file, parsed_chains, information_string=None, add_hydrogens = False):
     """
     Cleans the PDB file by removing heterogens, finding missing residues and atoms, and adding missing heavy atoms using PDBFixer.
 
     Args:
         pdb_file (str): The path to the PDB file to be cleaned.
         parsed_chains (list): A list of characters representing the chain IDs present in the PDB file.
-        information_lines (list): A list of strings representing the header information.
+        information_string (str): A list of strings representing the header information.
+        add_hydrogens (bool, optional): Whether to add hydrogens to the cleaned PDB file using the reduce tool. Defaults to False.
 
     Returns:
         
@@ -147,10 +148,11 @@ def pdb_cleaner(pdb_file, parsed_chains, information_lines=None):
     # Delete the temporary file
     os.remove(temp_pdb_file)
 
-    # Add hydrogens using reduce tool
-    command = "reduce -BUILD {} > {}".format(pdb_file, pdb_file.strip(".pdb")+ ".reduce_flip")
-    subprocess.run(command, shell=True)
-    os.rename(pdb_file.strip(".pdb")+ ".reduce_flip", pdb_file)
+    if add_hydrogens:
+        # Add hydrogens using reduce tool
+        command = "reduce -BUILD {} > {}".format(pdb_file, pdb_file.strip(".pdb")+ ".reduce_flip")
+        subprocess.run(command, shell=True)
+        os.rename(pdb_file.strip(".pdb")+ ".reduce_flip", pdb_file)
 
 def is_pdb_cleaned(pdb_file):
     """
