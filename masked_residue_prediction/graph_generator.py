@@ -49,7 +49,7 @@ def graph_generation(pdb_files):
 
     output_directory = "/test/test"
     # Generate graphs and save them in hdf5 files
-    feature_names = ['components', 'contact', 'exposure', 'surfacearea']
+    feature_names = ['components', 'contact', 'exposure', 'surfacearea', 'target_node']
     feature_modules = [importlib.import_module('deeprankcore.features.' + name) for name in feature_names]
     output_paths = queries.process(feature_modules = feature_modules)
 
